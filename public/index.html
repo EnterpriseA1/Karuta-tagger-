@@ -236,7 +236,29 @@
                             <input type="text" class="form-control" id="searchInput" placeholder="Search cards...">
                             <i class="bi bi-search search-icon"></i>
                         </div>
-                        <div id="cardList" class="card-list">
+                        
+<div class="mb-2">
+    <label>Hide cards with tags:</label>
+    <div id="filterTagContainer" class="d-flex flex-wrap gap-1">
+        <label class="form-check-inline">
+            <input type="checkbox" class="form-check-input tag-filter" value="waifus"> Waifus
+        </label>
+        <label class="form-check-inline">
+            <input type="checkbox" class="form-check-input tag-filter" value="collected_series"> Collected Series
+        </label>
+        <label class="form-check-inline">
+            <input type="checkbox" class="form-check-input tag-filter" value="slidetrade"> Slidetrade
+        </label>
+        <label class="form-check-inline">
+            <input type="checkbox" class="form-check-input tag-filter" value="worker"> Worker
+        </label>
+        <label class="form-check-inline">
+            <input type="checkbox" class="form-check-input tag-filter" value="burnburn"> Burnburn
+        </label>
+    </div>
+</div>
+
+<div id="cardList" class="card-list">
                             <!-- Card items will be populated here -->
                             <div class="text-center p-4 text-muted">
                                 Please upload a CSV file
@@ -366,8 +388,50 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+document.addEventListener('DOMContentLoaded', function() {
+    const elements = {
+        filterTags: document.querySelectorAll('.tag-filter')
+    };
+
+    elements.filterTags.forEach(checkbox => checkbox.addEventListener('change', filterCards));
+
+    function filterCards() {
+        const hiddenTags = Array.from(elements.filterTags)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+
+        document.querySelectorAll('.card-item').forEach(card => {
+            const cardCode = card.dataset.code;
+            const hasHiddenTag = hiddenTags.some(tag => state.tagCards[tag]?.has(cardCode));
+            card.style.display = hasHiddenTag ? 'none' : '';
+        });
+    }
+});
+
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js">
+document.addEventListener('DOMContentLoaded', function() {
+    const elements = {
+        filterTags: document.querySelectorAll('.tag-filter')
+    };
+
+    elements.filterTags.forEach(checkbox => checkbox.addEventListener('change', filterCards));
+
+    function filterCards() {
+        const hiddenTags = Array.from(elements.filterTags)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+
+        document.querySelectorAll('.card-item').forEach(card => {
+            const cardCode = card.dataset.code;
+            const hasHiddenTag = hiddenTags.some(tag => state.tagCards[tag]?.has(cardCode));
+            card.style.display = hasHiddenTag ? 'none' : '';
+        });
+    }
+});
+
+</script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1050,5 +1114,26 @@
             // Initialize the application
             updateStatus('Ready - Please upload a CSV file to begin');
         });
-    </script>
+    
+document.addEventListener('DOMContentLoaded', function() {
+    const elements = {
+        filterTags: document.querySelectorAll('.tag-filter')
+    };
+
+    elements.filterTags.forEach(checkbox => checkbox.addEventListener('change', filterCards));
+
+    function filterCards() {
+        const hiddenTags = Array.from(elements.filterTags)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+
+        document.querySelectorAll('.card-item').forEach(card => {
+            const cardCode = card.dataset.code;
+            const hasHiddenTag = hiddenTags.some(tag => state.tagCards[tag]?.has(cardCode));
+            card.style.display = hasHiddenTag ? 'none' : '';
+        });
+    }
+});
+
+</script>
 </body>

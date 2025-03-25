@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karuta Card Image Finder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card-list {
+            height: 500px;
+            overflow-y: auto;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .card-item {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.2s;
+        }
+        .card-item:hover {
+            background-color: #e9ecef;
+        }
+        .card-item.selected {
+            background-color: #cfe2ff;
+            border-left: 5px solid #0d6efd;
+        }
+        .image-container {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .image-container:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .burn-value {
+            color: #FF9900;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .tag-button {
+            margin-right: 5px;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+        .tag-button:hover {
+            transform: translateY(-2px);
+        }
+        #waifusBtn {
+            background-color: #ff9ff3;
+            border-color: #ff9ff3;
+        }
+        #collectedSeriesBtn {
+            background-color: #54a0ff;
+            border-color: #54a0ff;
+        }
+        #slidetradeBtn {
+            background-color: #feca57;
+            border-color: #feca57;
+        }
+        #workerBtn {
+            background-color: #1dd1a1;
+            border-color: #1dd1a1;
+        }
+        #burnburnBtn {
+            background-color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+        .status-bar {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 8px 15px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+        .custom-tag-container {
+            margin-top: 10px;
+        }
+        .custom-tag-input {
+            width: 150px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .tag-badge {
+            margin-right: 5px;
+            padding: 5px 8px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .tag-badge.waifus {
+            background-color: #ff9ff3;
+            color: white;
+        }
+        .tag-badge.collected_series {
+            background-color: #54a0ff;
+            color: white;
+        }
+        .tag-badge.slidetrade {
+            background-color: #feca57;
+            color: white;
+        }
+        .tag-badge.worker {
+            background-color: #1dd1a1;
+            color: white;
+        }
+        .tag-badge.burnburn {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        .tag-badge.custom {
+            background-color: #a55eea;
+            color: white;
+        }
+        .app-container {
+            padding-bottom: 50px;
+        }
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: #6c757d;
+        }
+        .search-input-container {
+            position: relative;
+        }
+        @media (max-width: 768px) {
+            .card-list {
+                height: 300px;
+            }
+            .image-container {
+                height: 200px;
+                margin-top: 15px;
+            }
+        }
+        .placeholder-img {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            background-color: #e9ecef;
+            font-size: 1.2rem;
+        }
+        .card-counter {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #343a40;
+        }
+        .tag-card-title {
+            margin-top: 15px;
+        }
+        .app-logo {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .main-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-3 app-container">
+        <div class="main-title">
+            <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" alt="Karuta Logo" class="app-logo">
+            <h1 class="mb-0">Karuta Card Image Finder</h1>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="csvFile" class="form-label">Upload Karuta CSV File:</label>
+                            <input class="form-control" type="file" id="csvFile" accept=".csv">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="sortCheck" checked>
+                            <label class="form-check-label" for="sortCheck">
+                                Sort by Burn Value
+                            </label>
+                        </div>
+                        <div class="btn-group mb-3" role="group">
+                            <input type="radio" class="btn-check" name="sortOrder" id="sortDesc" checked>
+                            <label class="btn btn-outline-primary" for="sortDesc">Highest First</label>
+                            <input type="radio" class="btn-check" name="sortOrder" id="sortAsc">
+                            <label class="btn btn-outline-primary" for="sortAsc">Lowest First</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Left Panel - Card List -->
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Card List</span>
+                            <span class="card-counter" id="cardCounter">0 cards</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="search-input-container mb-2">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search cards...">
+                            <i class="bi bi-search search-icon"></i>
+                        </div>
+                        <div id="cardList" class="card-list">
+                            <!-- Card items will be populated here -->
+                            <div class="text-center p-4 text-muted">
+                                Please upload a CSV file
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Card Details and Image -->
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        Card Details
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="mb-2"><strong>Character:</strong> <span id="characterName">-</span></div>
+                                <div class="mb-2"><strong>Series:</strong> <span id="seriesName">-</span></div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="mb-2"><strong>Code:</strong> <span id="cardCode">-</span></div>
+                                <div class="mb-2"><strong>Burn Value:</strong> <span id="burnValue" class="burn-value">-</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3 mt-2">
+                            <div class="col-12">
+                                <button id="generateImageBtn" class="btn btn-primary me-2">
+                                    <i class="bi bi-image"></i> Generate Image
+                                </button>
+                                <button id="nextImageBtn" class="btn btn-outline-secondary me-2">
+                                    <i class="bi bi-arrow-right"></i> Next Image
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="section-title tag-card-title"><i class="bi bi-tags"></i> Tag Card:</div>
+                                <button id="waifusBtn" class="btn btn-sm text-white tag-button">Waifus</button>
+                                <button id="collectedSeriesBtn" class="btn btn-sm text-white tag-button">Collected Series</button>
+                                <button id="slidetradeBtn" class="btn btn-sm text-white tag-button">Slidetrade</button>
+                                <button id="workerBtn" class="btn btn-sm text-white tag-button">Worker</button>
+                                <button id="burnburnBtn" class="btn btn-sm text-white tag-button">Burnburn</button>
+                                
+                                <!-- Custom Tag Input -->
+                                <div class="custom-tag-container">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control form-control-sm" id="customTagInput" placeholder="Custom tag">
+                                        <button id="addCustomTagBtn" class="btn btn-sm btn-secondary">
+                                            <i class="bi bi-plus-lg"></i> Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="section-title"><i class="bi bi-bookmark"></i> Current Card Tags:</div>
+                                <div id="currentCardTags">None</div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="image-container" id="imageContainer">
+                                    <div class="placeholder-img">Select a card to generate images</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-code"></i></span>
+                                    <input type="text" class="form-control" id="commandOutput" placeholder="Karuta command will appear here" readonly>
+                                    <button class="btn btn-outline-primary" id="generateBtn">
+                                        <i class="bi bi-gear"></i> Generate
+                                    </button>
+                                    <button class="btn btn-outline-secondary" id="copyBtn">
+                                        <i class="bi bi-clipboard"></i> Copy
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="clearTagsBtn">
+                                        <i class="bi bi-trash"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <i class="bi bi-tags"></i> Tagged Cards
+                    </div>
+                    <div class="card-body">
+                        <div id="tagStatus">None</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar" id="statusBar">Ready</div>
+    
+    <!-- Tag Selection Modal -->
+    <div class="modal fade" id="tagModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Select Tag for Command</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group" id="tagList">
+                        <!-- Tag options will be populated here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="selectTagBtn">Generate Command</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Application state
+            const state = {
+                cardsData: [],
+                filteredCards: [],
+                selectedCard: null,
+                searchResults: {},
+                currentResultIndex: 0,
+                tagCards: {
+                    waifus: new Set(),
+                    collected_series: new Set(),
+                    slidetrade: new Set(),
+                    worker: new Set(),
+                    burnburn: new Set()
+                },
+                customTags: {}  // For custom tags: {tagName: Set([codes])}
+            };
+            
+            // DOM elements
+            const elements = {
+                csvFile: document.getElementById('csvFile'),
+                sortCheck: document.getElementById('sortCheck'),
+                sortDesc: document.getElementById('sortDesc'),
+                sortAsc: document.getElementById('sortAsc'),
+                searchInput: document.getElementById('searchInput'),
+                cardList: document.getElementById('cardList'),
+                cardCounter: document.getElementById('cardCounter'),
+                characterName: document.getElementById('characterName'),
+                seriesName: document.getElementById('seriesName'),
+                cardCode: document.getElementById('cardCode'),
+                burnValue: document.getElementById('burnValue'),
+                generateImageBtn: document.getElementById('generateImageBtn'),
+                nextImageBtn: document.getElementById('nextImageBtn'),
+                imageContainer: document.getElementById('imageContainer'),
+                commandOutput: document.getElementById('commandOutput'),
+                generateBtn: document.getElementById('generateBtn'),
+                copyBtn: document.getElementById('copyBtn'),
+                clearTagsBtn: document.getElementById('clearTagsBtn'),
+                tagStatus: document.getElementById('tagStatus'),
+                statusBar: document.getElementById('statusBar'),
+                tagModal: new bootstrap.Modal(document.getElementById('tagModal')),
+                tagList: document.getElementById('tagList'),
+                selectTagBtn: document.getElementById('selectTagBtn'),
+                customTagInput: document.getElementById('customTagInput'),
+                addCustomTagBtn: document.getElementById('addCustomTagBtn'),
+                currentCardTags: document.getElementById('currentCardTags')
+            };
+            
+            // Tag buttons
+            const tagButtons = {
+                waifus: document.getElementById('waifusBtn'),
+                collected_series: document.getElementById('collectedSeriesBtn'),
+                slidetrade: document.getElementById('slidetradeBtn'),
+                worker: document.getElementById('workerBtn'),
+                burnburn: document.getElementById('burnburnBtn')
+            };
+            
+            // Event listeners
+            elements.csvFile.addEventListener('change', handleFileUpload);
+            elements.searchInput.addEventListener('input', filterCards);
+            elements.generateImageBtn.addEventListener('click', generateImage);
+            elements.nextImageBtn.addEventListener('click', showNextImage);
+            elements.generateBtn.addEventListener('click', showTagSelectionModal);
+            elements.copyBtn.addEventListener('click', copyCommand);
+            elements.clearTagsBtn.addEventListener('click', clearAllTags);
+            elements.selectTagBtn.addEventListener('click', generateCommand);
+            elements.addCustomTagBtn.addEventListener('click', addCustomTag);
+            
+            // Add event listeners for tag buttons
+            for (const [tag, button] of Object.entries(tagButtons)) {
+                button.addEventListener('click', () => tagCurrentCard(tag));
+            }
+            
+            // Add event listeners for sort controls
+            elements.sortCheck.addEventListener('change', applySort);
+            elements.sortAsc.addEventListener('change', applySort);
+            elements.sortDesc.addEventListener('change', applySort);
+            
+            // Functions
+            function handleFileUpload(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                updateStatus(`Loading file: ${file.name}`);
+                
+                Papa.parse(file, {
+                    header: true,
+                    dynamicTyping: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        if (results.errors.length > 0) {
+                            alert(`Error parsing CSV: ${results.errors[0].message}`);
+                            updateStatus('Error parsing CSV file');
+                            return;
+                        }
+                        
+                        // Format check and validation
+                        const data = results.data;
+                        
+                        // Check if the data has the expected structure
+                        if (data.length === 0) {
+                            alert('The CSV file is empty or has no valid data rows.');
+                            updateStatus('Error: Empty CSV file');
+                            return;
+                        }
+                        
+                        // Get column names from the first row
+                        const firstRow = data[0];
+                        const columnNames = Object.keys(firstRow);
+                        
+                        // Try to identify necessary columns with different possible names
+                        let characterCol = findColumn(columnNames, ['character', 'name', 'char', 'char_name', 'charname']);
+                        let seriesCol = findColumn(columnNames, ['series', 'franchise', 'origin', 'anime']);
+                        let codeCol = findColumn(columnNames, ['code', 'id', 'cardid', 'card_id', 'print']);
+                        let burnValueCol = findColumn(columnNames, ['burnvalue', 'burn_value', 'burn', 'quality', 'value', 'price']);
+                        
+                        // Show column mapping to the user
+                        console.log('Column mapping detected:');
+                        console.log('Character:', characterCol);
+                        console.log('Series:', seriesCol);
+                        console.log('Code:', codeCol);
+                        console.log('Burn Value:', burnValueCol);
+                        
+                        // Validate required columns
+                        if (!characterCol || !seriesCol || !codeCol) {
+                            // Let user select columns manually
+                            let message = 'Could not identify all required columns in your CSV. Please check your file has these columns:\n\n';
+                            message += '- Character name (could be called "character", "name", etc.)\n';
+                            message += '- Series name (could be called "series", "franchise", etc.)\n';
+                            message += '- Card code (could be called "code", "id", etc.)\n';
+                            message += '- Burn value (could be called "burnValue", "quality", etc.)\n\n';
+                            message += 'Available columns in your file: ' + columnNames.join(', ');
+                            
+                            alert(message);
+                            updateStatus('Error: Invalid CSV format - missing required columns');
+                            return;
+                        }
+                        
+                        // Process data to standardize column names
+                        const processedData = data.map(row => {
+                            return {
+                                character: row[characterCol] || 'Unknown',
+                                series: row[seriesCol] || 'Unknown', 
+                                code: row[codeCol] || 'Unknown',
+                                burnValue: burnValueCol ? parseFloat(row[burnValueCol]) || 0 : 0
+                            };
+                        });
+                        
+                        // Function to find column name from possible options
+                        function findColumn(columns, possibleNames) {
+                            for (const name of possibleNames) {
+                                // Try exact match
+                                if (columns.includes(name)) {
+                                    return name;
+                                }
+                                
+                                // Try case-insensitive match
+                                const lowerCaseMatch = columns.find(col => 
+                                    col.toLowerCase() === name.toLowerCase());
+                                if (lowerCaseMatch) {
+                                    return lowerCaseMatch;
+                                }
+                                
+                                // Try partial match (column contains the name)
+                                const partialMatch = columns.find(col => 
+                                    col.toLowerCase().includes(name.toLowerCase()));
+                                if (partialMatch) {
+                                    return partialMatch;
+                                }
+                            }
+                            return null;
+                        }
+                        
+                        state.cardsData = processedData;
+                        
+                        // Show preview of processed data
+                        console.log('Processed data sample:', processedData.slice(0, 3));
+                        
+                        // Add a preview button for the user to check the data
+                        const previewBtn = document.createElement('button');
+                        previewBtn.className = 'btn btn-sm btn-outline-info mt-2';
+                        previewBtn.textContent = 'Preview Data';
+                        previewBtn.addEventListener('click', () => {
+                            showDataPreview(processedData.slice(0, 10));
+                        });
+                        
+                        // Add the button below the file input
+                        const fileInputParent = elements.csvFile.parentElement;
+                        if (!document.getElementById('preview-data-btn')) {
+                            previewBtn.id = 'preview-data-btn';
+                            fileInputParent.appendChild(previewBtn);
+                        }
+                        
+                        state.cardsData = data;
+                        state.filteredCards = [...state.cardsData];
+                        applySort();
+                        updateStatus(`Loaded ${state.cardsData.length} cards`);
+                        updateCardCounter(state.filteredCards.length);
+                    }
+                });
+            }
+            
+            function updateCardCounter(count) {
+                elements.cardCounter.textContent = `${count} cards`;
+            }
+            
+            function applySort() {
+                if (state.cardsData.length === 0) return;
+                
+                if (elements.sortCheck.checked) {
+                    const ascending = elements.sortAsc.checked;
+                    state.filteredCards.sort((a, b) => {
+                        // Ensure burnValue is a number
+                        const burnA = typeof a.burnValue === 'number' ? a.burnValue : parseFloat(a.burnValue) || 0;
+                        const burnB = typeof b.burnValue === 'number' ? b.burnValue : parseFloat(b.burnValue) || 0;
+                        
+                        return ascending ? burnA - burnB : burnB - burnA;
+                    });
+                }
+                
+                displayCardList();
+            }
+            
+            function filterCards() {
+                const searchTerm = elements.searchInput.value.toLowerCase();
+                
+                if (searchTerm === '') {
+                    state.filteredCards = [...state.cardsData];
+                } else {
+                    state.filteredCards = state.cardsData.filter(card => 
+                        (card.character && card.character.toLowerCase().includes(searchTerm)) || 
+                        (card.series && card.series.toLowerCase().includes(searchTerm))
+                    );
+                }
+                
+                applySort();
+                updateStatus(`Found ${state.filteredCards.length} cards matching '${searchTerm}'`);
+                updateCardCounter(state.filteredCards.length);
+            }
+            
+            function displayCardList() {
+                elements.cardList.innerHTML = '';
+                
+                if (state.filteredCards.length === 0) {
+                    elements.cardList.innerHTML = '<div class="text-center p-4 text-muted">No cards found</div>';
+                    return;
+                }
+                
+                state.filteredCards.forEach(card => {
+                    const cardItem = document.createElement('div');
+                    cardItem.className = 'card-item';
+                    
+                    // Format burn value 
+                    const burnValue = typeof card.burnValue === 'number' ? card.burnValue : parseFloat(card.burnValue) || 0;
+                    const formattedBurn = Math.floor(burnValue);
+                    
+                    cardItem.textContent = `${formattedBurn} $ | ${card.character} (${card.series})`;
+                    cardItem.dataset.code = card.code;
+                    
+                    cardItem.addEventListener('click', () => {
+                        // Remove selected class from all items
+                        document.querySelectorAll('.card-item').forEach(item => {
+                            item.classList.remove('selected');
+                        });
+                        
+                        // Add selected class to this item
+                        cardItem.classList.add('selected');
+                        
+                        // Display card details
+                        displayCardDetails(card);
+                    });
+                    
+                    elements.cardList.appendChild(cardItem);
+                });
+            }
+            
+            function displayCardDetails(card) {
+                state.selectedCard = card;
+                
+                elements.characterName.textContent = card.character || 'Unknown';
+                elements.seriesName.textContent = card.series || 'Unknown';
+                elements.cardCode.textContent = card.code || 'Unknown';
+                
+                // Format burn value
+                const burnValue = typeof card.burnValue === 'number' ? card.burnValue : parseFloat(card.burnValue) || 0;
+                const formattedBurn = Math.floor(burnValue);
+                elements.burnValue.textContent = `${formattedBurn} $`;
+                
+                // Clear the image container
+                elements.imageContainer.innerHTML = '<div class="placeholder-img">Click "Generate Image" to see image options</div>';
+                
+                // Update current tags for this card
+                updateCurrentCardTags();
+                
+                updateStatus(`Selected card: ${card.character} from ${card.series}`);
+            }
+            
+            function updateCurrentCardTags() {
+                if (!state.selectedCard) {
+                    elements.currentCardTags.innerHTML = 'None';
+                    return;
+                }
+                
+                const code = state.selectedCard.code;
+                const cardTags = [];
+                
+                // Check standard tags
+                for (const [tag, cards] of Object.entries(state.tagCards)) {
+                    if (cards.has(code)) {
+                        cardTags.push(`<span class="tag-badge ${tag}">${tag.replace('_', ' ').toUpperCase()}</span>`);
+                    }
+                }
+                
+                // Check custom tags
+                for (const [tag, cards] of Object.entries(state.customTags)) {
+                    if (cards.has(code)) {
+                        cardTags.push(`<span class="tag-badge custom">${tag.toUpperCase()}</span>`);
+                    }
+                }
+                
+                if (cardTags.length > 0) {
+                    elements.currentCardTags.innerHTML = cardTags.join('');
+                } else {
+                    elements.currentCardTags.innerHTML = 'None';
+                }
+            }
+            
+            function generateImage() {
+                if (!state.selectedCard) {
+                    alert('Please select a card first');
+                    return;
+                }
+                
+                const card = state.selectedCard;
+                const searchKey = `${card.character}|${card.series}`;
+                
+                // Clear the image container and show loading message
+                elements.imageContainer.innerHTML = '<div class="text-center">Generating images...<br>Please wait...</div>';
+                updateStatus(`Generating images for ${card.character} from ${card.series}...`);
+                
+                // Check cache first
+                if (state.searchResults[searchKey] && state.searchResults[searchKey].length > 0) {
+                    state.currentResultIndex = 0;
+                    displayImage(state.searchResults[searchKey][0]);
+                    updateStatus(`Showing image 1 of ${state.searchResults[searchKey].length}`);
+                    return;
+                }
+                
+                // Generate placeholder images
+                setTimeout(() => {
+                    const placeholderImages = generatePlaceholderImages(card.character, card.series);
+                    state.searchResults[searchKey] = placeholderImages;
+                    state.currentResultIndex = 0;
+                    
+                    if (placeholderImages.length > 0) {
+                        displayImage(placeholderImages[0]);
+                        updateStatus(`Showing image 1 of ${placeholderImages.length}`);
+                    } else {
+                        elements.imageContainer.innerHTML = '<div class="placeholder-img">No images could be generated</div>';
+                        updateStatus('No images generated');
+                    }
+                }, 500);  // Small delay to simulate processing
+            }
+            
+            function generatePlaceholderImages(character, series) {
+                // Since we can't do actual image search in a frontend-only version,
+                // we'll create placeholder images with character/series info
+                
+                // Create deterministic number of images based on character/series
+                const characterSeed = character.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+                const seriesSeed = series.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+                const combinedSeed = (characterSeed + seriesSeed) % 100;
+                
+                // Generate 3-7 images based on the seed
+                const numImages = 3 + (combinedSeed % 5);
+                const images = [];
+                
+                for (let i = 0; i < numImages; i++) {
+                    // Create HTML for a colored placeholder with character/series info
+                    const hue = (combinedSeed * (i + 1)) % 360;
+                    const image = createColorPlaceholder(character, series, i, hue);
+                    images.push(image);
+                }
+                
+                return images;
+            }
+            
+            function createColorPlaceholder(character, series, index, hue) {
+                // Create a colored div with character and series info
+                const saturation = 70 + (index * 5);
+                const lightness = 65 - (index * 5);
+                
+                return `
+                    <div style="width:100%;height:100%;background-color:hsl(${hue},${saturation}%,${lightness}%);
+                        display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px;text-align:center;color:white;">
+                        <div style="font-size:1.4rem;font-weight:bold;text-shadow:1px 1px 3px rgba(0,0,0,0.5);margin-bottom:10px;">
+                            ${character}
+                        </div>
+                        <div style="font-size:1.1rem;text-shadow:1px 1px 3px rgba(0,0,0,0.5);">
+                            ${series}
+                        </div>
+                        <div style="margin-top:20px;font-size:0.9rem;opacity:0.8;">
+                            Image ${index + 1} - No actual image search in frontend-only version
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function displayImage(imageHTML) {
+                // Set the image HTML directly
+                elements.imageContainer.innerHTML = imageHTML;
+                
+                // Update status
+                const resultIndex = state.currentResultIndex + 1;
+                const searchKey = `${state.selectedCard.character}|${state.selectedCard.series}`;
+                const totalResults = state.searchResults[searchKey].length;
+                updateStatus(`Showing image ${resultIndex} of ${totalResults}`);
+            }
+            
+            function showNextImage() {
+                if (!state.selectedCard) return;
+                
+                const searchKey = `${state.selectedCard.character}|${state.selectedCard.series}`;
+                if (!state.searchResults[searchKey] || state.searchResults[searchKey].length === 0) {
+                    generateImage();
+                    return;
+                }
+                
+                const images = state.searchResults[searchKey];
+                state.currentResultIndex = (state.currentResultIndex + 1) % images.length;
+                displayImage(images[state.currentResultIndex]);
+                
+                // Update status with current image index
+                updateStatus(`Showing image ${state.currentResultIndex + 1} of ${images.length}`);
+            }
+            
+            function tagCurrentCard(tag) {
+                if (!state.selectedCard) {
+                    alert('Please select a card first');
+                    return;
+                }
+                
+                const code = state.selectedCard.code;
+                state.tagCards[tag].add(code);
+                
+                updateTagStatus();
+                updateCurrentCardTags();
+                updateStatus(`Card ${code} tagged as '${tag}'`);
+            }
+            
+            function addCustomTag() {
+                if (!state.selectedCard) {
+                    alert('Please select a card first');
+                    return;
+                }
+                
+                const customTag = elements.customTagInput.value.trim().toLowerCase();
+                
+                if (!customTag) {
+                    alert('Please enter a custom tag name');
+                    return;
+                }
+                
+                // Initialize the custom tag if it doesn't exist
+                if (!state.customTags[customTag]) {
+                    state.customTags[customTag] = new Set();
+                }
+                
+                const code = state.selectedCard.code;
+                state.customTags[customTag].add(code);
+                
+                elements.customTagInput.value = '';
+                updateTagStatus();
+                updateCurrentCardTags();
+                updateStatus(`Card ${code} tagged as '${customTag}'`);
+            }
+            
+            function updateTagStatus() {
+                const status = [];
+                
+                // Standard tags
+                for (const [tag, cards] of Object.entries(state.tagCards)) {
+                    if (cards.size > 0) {
+                        status.push(`<span class="tag-badge ${tag}">${tag.replace('_', ' ').toUpperCase()}: ${cards.size}</span>`);
+                    }
+                }
+                
+                // Custom tags
+                for (const [tag, cards] of Object.entries(state.customTags)) {
+                    if (cards.size > 0) {
+                        status.push(`<span class="tag-badge custom">${tag.toUpperCase()}: ${cards.size}</span>`);
+                    }
+                }
+                
+                if (status.length > 0) {
+                    elements.tagStatus.innerHTML = status.join('');
+                } else {
+                    elements.tagStatus.innerHTML = 'None';
+                }
+            }
+            
+            function showTagSelectionModal() {
+                // Populate the tag list
+                elements.tagList.innerHTML = '';
+                
+                let hasAnyTags = false;
+                
+                // Add standard tags
+                for (const [tag, cards] of Object.entries(state.tagCards)) {
+                    if (cards.size > 0) {
+                        const item = document.createElement('button');
+                        item.className = 'list-group-item list-group-item-action';
+                        item.textContent = `${tag.replace('_', ' ').toUpperCase()} (${cards.size} cards)`;
+                        item.dataset.tag = tag;
+                        item.dataset.isCustom = 'false';
+                        elements.tagList.appendChild(item);
+                        hasAnyTags = true;
+                    }
+                }
+                
+                // Add custom tags
+                for (const [tag, cards] of Object.entries(state.customTags)) {
+                    if (cards.size > 0) {
+                        const item = document.createElement('button');
+                        item.className = 'list-group-item list-group-item-action';
+                        item.textContent = `${tag.toUpperCase()} (${cards.size} cards)`;
+                        item.dataset.tag = tag;
+                        item.dataset.isCustom = 'true';
+                        elements.tagList.appendChild(item);
+                        hasAnyTags = true;
+                    }
+                }
+                
+                if (!hasAnyTags) {
+                    alert('No tags available. Please tag some cards first.');
+                    return;
+                }
+                
+                // Select the first item by default
+                if (elements.tagList.children.length > 0) {
+                    elements.tagList.children[0].classList.add('active');
+                }
+                
+                // Handle item selection
+                elements.tagList.querySelectorAll('.list-group-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        // Remove active class from all items
+                        elements.tagList.querySelectorAll('.list-group-item').forEach(i => {
+                            i.classList.remove('active');
+                        });
+                        
+                        // Add active class to this item
+                        item.classList.add('active');
+                    });
+                });
+                
+                // Show the modal
+                elements.tagModal.show();
+            }
+            
+            function generateCommand() {
+                const activeItem = elements.tagList.querySelector('.list-group-item.active');
+                if (!activeItem) {
+                    alert('Please select a tag');
+                    return;
+                }
+                
+                const tag = activeItem.dataset.tag;
+                const isCustom = activeItem.dataset.isCustom === 'true';
+                
+                // Get the cards for this tag
+                const cards = isCustom ? state.customTags[tag] : state.tagCards[tag];
+                
+                if (cards.size === 0) {
+                    alert(`No cards tagged as '${tag}'`);
+                    return;
+                }
+                
+                // Generate the command
+                const cardCodes = Array.from(cards).sort().join(',');
+                const command = `kt ${tag} ${cardCodes}`;
+                elements.commandOutput.value = command;
+                
+                // Close the modal
+                elements.tagModal.hide();
+                
+                // Show confirmation
+                updateStatus(`Generated command for ${cards.size} cards tagged as '${tag}'`);
+            }
+            
+            function copyCommand() {
+                const command = elements.commandOutput.value;
+                if (!command) {
+                    alert('No command generated yet');
+                    return;
+                }
+                
+                // Copy to clipboard
+                navigator.clipboard.writeText(command)
+                    .then(() => {
+                        updateStatus('Command copied to clipboard');
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                        alert('Failed to copy to clipboard. Please select and copy the text manually.');
+                        elements.commandOutput.select();
+                    });
+            }
+            
+            function clearAllTags() {
+                if (!confirm('Clear all tagged cards?')) {
+                    return;
+                }
+                
+                // Clear standard tags
+                for (const tag in state.tagCards) {
+                    state.tagCards[tag].clear();
+                }
+                
+                // Clear custom tags
+                state.customTags = {};
+                
+                updateTagStatus();
+                updateCurrentCardTags();
+                elements.commandOutput.value = '';
+                updateStatus('All tags cleared');
+            }
+            
+            function updateStatus(message) {
+                elements.statusBar.textContent = message;
+                console.log(message);
+            }
+            
+            // Export functionality
+            function exportTagsToJson() {
+                const exportData = {
+                    standardTags: {},
+                    customTags: {}
+                };
+                
+                // Export standard tags
+                for (const [tag, cards] of Object.entries(state.tagCards)) {
+                    if (cards.size > 0) {
+                        exportData.standardTags[tag] = Array.from(cards);
+                    }
+                }
+                
+                // Export custom tags
+                for (const [tag, cards] of Object.entries(state.customTags)) {
+                    if (cards.size > 0) {
+                        exportData.customTags[tag] = Array.from(cards);
+                    }
+                }
+                
+                // Create download link
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = 'karuta_tags.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                updateStatus('Tags exported to JSON file');
+            }
+            
+            // Add export button to UI
+            const exportButton = document.createElement('button');
+            exportButton.className = 'btn btn-sm btn-info position-fixed';
+            exportButton.style.right = '10px';
+            exportButton.style.top = '10px';
+            exportButton.innerHTML = '<i class="bi bi-download"></i> Export Tags';
+            exportButton.addEventListener('click', exportTagsToJson);
+            document.body.appendChild(exportButton);
+            
+            // Initialize the application
+            updateStatus('Ready - Please upload a CSV file to begin');
+        });
+    </script>
+</body>

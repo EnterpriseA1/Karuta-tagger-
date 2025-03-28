@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,25 +12,30 @@
             background-color: #f0f0f0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         .card-list {
             height: 500px;
             overflow-y: auto;
             border-radius: 8px;
             border: 1px solid #dee2e6;
         }
+
         .card-item {
             cursor: pointer;
             padding: 10px;
             border-bottom: 1px solid #ddd;
             transition: background-color 0.2s;
         }
+
         .card-item:hover {
             background-color: #e9ecef;
         }
+
         .card-item.selected {
             background-color: #cfe2ff;
             border-left: 5px solid #0d6efd;
         }
+
         .image-container {
             height: 300px;
             display: flex;
@@ -40,47 +46,58 @@
             overflow: hidden;
             transition: all 0.3s;
         }
+
         .image-container:hover {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
+
         .image-container img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
         }
+
         .burn-value {
             color: #FF9900;
             font-weight: bold;
             font-size: 1.2rem;
         }
+
         .tag-button {
             margin-right: 5px;
             margin-bottom: 8px;
             transition: all 0.2s;
         }
+
         .tag-button:hover {
             transform: translateY(-2px);
         }
+
         #waifusBtn {
             background-color: #ff9ff3;
             border-color: #ff9ff3;
         }
+
         #collectedSeriesBtn {
             background-color: #54a0ff;
             border-color: #54a0ff;
         }
+
         #slidetradeBtn {
             background-color: #feca57;
             border-color: #feca57;
         }
+
         #workerBtn {
             background-color: #1dd1a1;
             border-color: #1dd1a1;
         }
+
         #burnburnBtn {
             background-color: #ff6b6b;
             border-color: #ff6b6b;
         }
+
         .status-bar {
             background-color: #f8f9fa;
             border-top: 1px solid #dee2e6;
@@ -92,14 +109,17 @@
             font-size: 0.9rem;
             z-index: 1000;
         }
+
         .custom-tag-container {
             margin-top: 10px;
         }
+
         .custom-tag-input {
             width: 150px;
             display: inline-block;
             margin-right: 5px;
         }
+
         .tag-badge {
             margin-right: 5px;
             padding: 5px 8px;
@@ -109,51 +129,63 @@
             font-size: 0.85rem;
             font-weight: 500;
         }
+
         .tag-badge.waifus {
             background-color: #ff9ff3;
             color: white;
         }
+
         .tag-badge.collected_series {
             background-color: #54a0ff;
             color: white;
         }
+
         .tag-badge.slidetrade {
             background-color: #feca57;
             color: white;
         }
+
         .tag-badge.worker {
             background-color: #1dd1a1;
             color: white;
         }
+
         .tag-badge.burnburn {
             background-color: #ff6b6b;
             color: white;
         }
+
         .tag-badge.custom {
             background-color: #a55eea;
             color: white;
         }
+
         .app-container {
             padding-bottom: 50px;
         }
+
         .search-icon {
             position: absolute;
             right: 10px;
             top: 10px;
             color: #6c757d;
         }
+
         .search-input-container {
             position: relative;
         }
+
         @media (max-width: 768px) {
             .card-list {
                 height: 300px;
             }
+
             .image-container {
                 height: 200px;
                 margin-top: 15px;
             }
         }
+
         .placeholder-img {
             width: 100%;
             height: 100%;
@@ -164,23 +196,28 @@
             background-color: #e9ecef;
             font-size: 1.2rem;
         }
+
         .card-counter {
             font-size: 0.8rem;
             color: #6c757d;
         }
+
         .section-title {
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 10px;
             color: #343a40;
         }
+
         .tag-card-title {
             margin-top: 15px;
         }
+
         .app-logo {
             height: 40px;
             margin-right: 10px;
         }
+
         .main-title {
             display: flex;
             align-items: center;
@@ -189,13 +226,14 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container-fluid py-3 app-container">
         <div class="main-title">
             <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" alt="Karuta Logo" class="app-logo">
             <h1 class="mb-0">Karuta Card Image Finder</h1>
         </div>
-        
+
         <div class="row mb-3">
             <div class="col-md-6 offset-md-3">
                 <div class="card">
@@ -220,7 +258,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
             <!-- Left Panel - Card List -->
             <div class="col-md-4 mb-3">
@@ -236,29 +274,15 @@
                             <input type="text" class="form-control" id="searchInput" placeholder="Search cards...">
                             <i class="bi bi-search search-icon"></i>
                         </div>
-                        
-<div class="mb-2">
-    <label>Hide cards with tags:</label>
-    <div id="filterTagContainer" class="d-flex flex-wrap gap-1">
-        <label class="form-check-inline">
-            <input type="checkbox" class="form-check-input tag-filter" value="waifus"> Waifus
-        </label>
-        <label class="form-check-inline">
-            <input type="checkbox" class="form-check-input tag-filter" value="collected_series"> Collected Series
-        </label>
-        <label class="form-check-inline">
-            <input type="checkbox" class="form-check-input tag-filter" value="slidetrade"> Slidetrade
-        </label>
-        <label class="form-check-inline">
-            <input type="checkbox" class="form-check-input tag-filter" value="worker"> Worker
-        </label>
-        <label class="form-check-inline">
-            <input type="checkbox" class="form-check-input tag-filter" value="burnburn"> Burnburn
-        </label>
-    </div>
-</div>
 
-<div id="cardList" class="card-list">
+                        <div class="mb-2">
+                            <label class="form-check">
+                                <input type="checkbox" class="form-check-input" id="hideTaggedCards" checked>
+                                Show only untagged cards
+                            </label>
+                        </div>
+
+                        <div id="cardList" class="card-list">
                             <!-- Card items will be populated here -->
                             <div class="text-center p-4 text-muted">
                                 Please upload a CSV file
@@ -267,7 +291,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Right Panel - Card Details and Image -->
             <div class="col-md-8">
                 <div class="card mb-3">
@@ -282,10 +306,11 @@
                             </div>
                             <div class="col-md-6 col-sm-6">
                                 <div class="mb-2"><strong>Code:</strong> <span id="cardCode">-</span></div>
-                                <div class="mb-2"><strong>Burn Value:</strong> <span id="burnValue" class="burn-value">-</span></div>
+                                <div class="mb-2"><strong>Burn Value:</strong> <span id="burnValue"
+                                        class="burn-value">-</span></div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-3 mt-2">
                             <div class="col-12">
                                 <button id="generateImageBtn" class="btn btn-primary me-2">
@@ -301,15 +326,17 @@
                             <div class="col-12">
                                 <div class="section-title tag-card-title"><i class="bi bi-tags"></i> Tag Card:</div>
                                 <button id="waifusBtn" class="btn btn-sm text-white tag-button">Waifus</button>
-                                <button id="collectedSeriesBtn" class="btn btn-sm text-white tag-button">Collected Series</button>
+                                <button id="collectedSeriesBtn" class="btn btn-sm text-white tag-button">Collected
+                                    Series</button>
                                 <button id="slidetradeBtn" class="btn btn-sm text-white tag-button">Slidetrade</button>
                                 <button id="workerBtn" class="btn btn-sm text-white tag-button">Worker</button>
                                 <button id="burnburnBtn" class="btn btn-sm text-white tag-button">Burnburn</button>
-                                
+
                                 <!-- Custom Tag Input -->
                                 <div class="custom-tag-container">
                                     <div class="input-group">
-                                        <input type="text" class="form-control form-control-sm" id="customTagInput" placeholder="Custom tag">
+                                        <input type="text" class="form-control form-control-sm" id="customTagInput"
+                                            placeholder="Custom tag">
                                         <button id="addCustomTagBtn" class="btn btn-sm btn-secondary">
                                             <i class="bi bi-plus-lg"></i> Add
                                         </button>
@@ -332,12 +359,13 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-code"></i></span>
-                                    <input type="text" class="form-control" id="commandOutput" placeholder="Karuta command will appear here" readonly>
+                                    <input type="text" class="form-control" id="commandOutput"
+                                        placeholder="Karuta command will appear here" readonly>
                                     <button class="btn btn-outline-primary" id="generateBtn">
                                         <i class="bi bi-gear"></i> Generate
                                     </button>
@@ -352,7 +380,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="card">
                     <div class="card-header bg-primary text-white">
                         <i class="bi bi-tags"></i> Tagged Cards
@@ -364,9 +392,9 @@
             </div>
         </div>
     </div>
-    
+
     <div class="status-bar" id="statusBar">Ready</div>
-    
+
     <!-- Tag Selection Modal -->
     <div class="modal fade" id="tagModal" tabindex="-1">
         <div class="modal-dialog">
@@ -388,55 +416,15 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-document.addEventListener('DOMContentLoaded', function() {
-    const elements = {
-        filterTags: document.querySelectorAll('.tag-filter')
-    };
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
 
-    elements.filterTags.forEach(checkbox => checkbox.addEventListener('change', filterCards));
-
-    function filterCards() {
-        const hiddenTags = Array.from(elements.filterTags)
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
-
-        document.querySelectorAll('.card-item').forEach(card => {
-            const cardCode = card.dataset.code;
-            const hasHiddenTag = hiddenTags.some(tag => state.tagCards[tag]?.has(cardCode));
-            card.style.display = hasHiddenTag ? 'none' : '';
-        });
-    }
-});
-
-</script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js">
-document.addEventListener('DOMContentLoaded', function() {
-    const elements = {
-        filterTags: document.querySelectorAll('.tag-filter')
-    };
-
-    elements.filterTags.forEach(checkbox => checkbox.addEventListener('change', filterCards));
-
-    function filterCards() {
-        const hiddenTags = Array.from(elements.filterTags)
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
-
-        document.querySelectorAll('.card-item').forEach(card => {
-            const cardCode = card.dataset.code;
-            const hasHiddenTag = hiddenTags.some(tag => state.tagCards[tag]?.has(cardCode));
-            card.style.display = hasHiddenTag ? 'none' : '';
-        });
-    }
-});
-
-</script>
-    
+    <!-- Application Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Application state
-            const state = {
+        document.addEventListener('DOMContentLoaded', function () {
+            // Make state globally accessible for the direct filter
+            window.state = {
                 cardsData: [],
                 filteredCards: [],
                 selectedCard: null,
@@ -451,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 customTags: {}  // For custom tags: {tagName: Set([codes])}
             };
-            
+
             // DOM elements
             const elements = {
                 csvFile: document.getElementById('csvFile'),
@@ -479,9 +467,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectTagBtn: document.getElementById('selectTagBtn'),
                 customTagInput: document.getElementById('customTagInput'),
                 addCustomTagBtn: document.getElementById('addCustomTagBtn'),
-                currentCardTags: document.getElementById('currentCardTags')
+                currentCardTags: document.getElementById('currentCardTags'),
+                hideTaggedCards: document.getElementById('hideTaggedCards')
             };
-            
+
+            // Set checkbox to checked by default
+            elements.hideTaggedCards.checked = true;
+
             // Tag buttons
             const tagButtons = {
                 waifus: document.getElementById('waifusBtn'),
@@ -490,10 +482,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 worker: document.getElementById('workerBtn'),
                 burnburn: document.getElementById('burnburnBtn')
             };
-            
+
             // Event listeners
             elements.csvFile.addEventListener('change', handleFileUpload);
-            elements.searchInput.addEventListener('input', filterCards);
+            elements.searchInput.addEventListener('input', applySearchFilter);
             elements.generateImageBtn.addEventListener('click', generateImage);
             elements.nextImageBtn.addEventListener('click', showNextImage);
             elements.generateBtn.addEventListener('click', showTagSelectionModal);
@@ -501,294 +493,410 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.clearTagsBtn.addEventListener('click', clearAllTags);
             elements.selectTagBtn.addEventListener('click', generateCommand);
             elements.addCustomTagBtn.addEventListener('click', addCustomTag);
-            
+
             // Add event listeners for tag buttons
             for (const [tag, button] of Object.entries(tagButtons)) {
                 button.addEventListener('click', () => tagCurrentCard(tag));
             }
-            
+
             // Add event listeners for sort controls
             elements.sortCheck.addEventListener('change', applySort);
             elements.sortAsc.addEventListener('change', applySort);
             elements.sortDesc.addEventListener('change', applySort);
-            
+
             // Functions
             function handleFileUpload(e) {
                 const file = e.target.files[0];
-                if (!file) return;
-                
-                updateStatus(`Loading file: ${file.name}`);
-                
-                Papa.parse(file, {
-                    header: true,
-                    dynamicTyping: true,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        if (results.errors.length > 0) {
-                            alert(`Error parsing CSV: ${results.errors[0].message}`);
-                            updateStatus('Error parsing CSV file');
-                            return;
-                        }
-                        
-                        // Format check and validation
-                        const data = results.data;
-                        
-                        // Check if the data has the expected structure
-                        if (data.length === 0) {
-                            alert('The CSV file is empty or has no valid data rows.');
-                            updateStatus('Error: Empty CSV file');
-                            return;
-                        }
-                        
-                        // Get column names from the first row
-                        const firstRow = data[0];
-                        const columnNames = Object.keys(firstRow);
-                        
-                        // Try to identify necessary columns with different possible names
-                        let characterCol = findColumn(columnNames, ['character', 'name', 'char', 'char_name', 'charname']);
-                        let seriesCol = findColumn(columnNames, ['series', 'franchise', 'origin', 'anime']);
-                        let codeCol = findColumn(columnNames, ['code', 'id', 'cardid', 'card_id', 'print']);
-                        let burnValueCol = findColumn(columnNames, ['burnvalue', 'burn_value', 'burn', 'quality', 'value', 'price']);
-                        
-                        // Show column mapping to the user
-                        console.log('Column mapping detected:');
-                        console.log('Character:', characterCol);
-                        console.log('Series:', seriesCol);
-                        console.log('Code:', codeCol);
-                        console.log('Burn Value:', burnValueCol);
-                        
-                        // Validate required columns
-                        if (!characterCol || !seriesCol || !codeCol) {
-                            // Let user select columns manually
-                            let message = 'Could not identify all required columns in your CSV. Please check your file has these columns:\n\n';
-                            message += '- Character name (could be called "character", "name", etc.)\n';
-                            message += '- Series name (could be called "series", "franchise", etc.)\n';
-                            message += '- Card code (could be called "code", "id", etc.)\n';
-                            message += '- Burn value (could be called "burnValue", "quality", etc.)\n\n';
-                            message += 'Available columns in your file: ' + columnNames.join(', ');
-                            
-                            alert(message);
-                            updateStatus('Error: Invalid CSV format - missing required columns');
-                            return;
-                        }
-                        
-                        // Process data to standardize column names
-                        const processedData = data.map(row => {
-                            return {
-                                character: row[characterCol] || 'Unknown',
-                                series: row[seriesCol] || 'Unknown', 
-                                code: row[codeCol] || 'Unknown',
-                                burnValue: burnValueCol ? parseFloat(row[burnValueCol]) || 0 : 0
-                            };
-                        });
-                        
-                        // Function to find column name from possible options
-                        function findColumn(columns, possibleNames) {
-                            for (const name of possibleNames) {
-                                // Try exact match
-                                if (columns.includes(name)) {
-                                    return name;
-                                }
-                                
-                                // Try case-insensitive match
-                                const lowerCaseMatch = columns.find(col => 
-                                    col.toLowerCase() === name.toLowerCase());
-                                if (lowerCaseMatch) {
-                                    return lowerCaseMatch;
-                                }
-                                
-                                // Try partial match (column contains the name)
-                                const partialMatch = columns.find(col => 
-                                    col.toLowerCase().includes(name.toLowerCase()));
-                                if (partialMatch) {
-                                    return partialMatch;
+                if (!file) {
+                    console.log("No file selected");
+                    return;
+                }
+
+                console.log("File selected:", file.name, file.size, "bytes");
+                updateStatus(`Loading file: ${file.name} (${file.size} bytes)`);
+
+                // Create a FileReader to read the file content
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const csvContent = event.target.result;
+                    console.log("CSV content sample:", csvContent.substring(0, 200)); // Log a sample of the file content
+
+                    // Parse CSV with more lenient options
+                    Papa.parse(csvContent, {
+                        header: true,
+                        skipEmptyLines: true,
+                        dynamicTyping: true,
+                        delimiter: "", // Auto-detect delimiter
+                        complete: function (results) {
+                            console.log("PapaParse results:", results);
+
+                            if (results.errors && results.errors.length > 0) {
+                                console.warn("CSV parsing had errors:", results.errors);
+                                // Continue anyway, we'll try to work with what we got
+                            }
+
+                            // Check if we have any data
+                            if (!results.data || results.data.length === 0) {
+                                console.error("No data parsed from CSV");
+                                alert("Could not parse any data from the CSV file. Please check the file format.");
+                                updateStatus("Error: No data could be parsed from CSV");
+                                return;
+                            }
+
+                            // Get column names from the first row
+                            const firstRow = results.data[0];
+                            if (!firstRow) {
+                                console.error("First row is empty");
+                                alert("The CSV file appears to be empty or malformed.");
+                                updateStatus("Error: CSV file is empty or malformed");
+                                return;
+                            }
+
+                            const columnNames = Object.keys(firstRow);
+                            console.log("CSV columns detected:", columnNames);
+
+                            // Try to identify necessary columns with more patterns
+                            let characterCol = findColumn(columnNames, ['character', 'name', 'char', 'char_name', 'charname', 'character name', 'char name']);
+                            let seriesCol = findColumn(columnNames, ['series', 'franchise', 'origin', 'anime', 'source', 'from']);
+                            let codeCol = findColumn(columnNames, ['code', 'id', 'cardid', 'card_id', 'print', 'card code', 'cardcode', 'card']);
+                            let burnValueCol = findColumn(columnNames, ['burnvalue', 'burn_value', 'burn', 'quality', 'value', 'price', 'worth', 'cost']);
+
+                            // Log what we found
+                            console.log('Column mapping detected:');
+                            console.log('Character:', characterCol);
+                            console.log('Series:', seriesCol);
+                            console.log('Code:', codeCol);
+                            console.log('Burn Value:', burnValueCol);
+
+                            // Special handling for common Karuta CSV formats
+                            if (!characterCol && !seriesCol && !codeCol) {
+                                // If we couldn't detect any columns, let's check if we have numeric indices
+                                // This happens with CSVs that don't have proper headers
+                                if (columnNames.some(col => !isNaN(parseInt(col)))) {
+                                    console.log("CSV appears to have numeric column indices instead of headers");
+
+                                    // Try to determine columns by position (common in Karuta exports)
+                                    // Typical order: Character, Series, Code, Edition, Print, Wishlists, Damage, Frames, Value
+                                    characterCol = "0";
+                                    seriesCol = "1";
+                                    codeCol = "2";
+
+                                    // Burn value is often around position 8 or 9
+                                    burnValueCol = columnNames.find(col => parseInt(col) >= 8);
+                                    if (!burnValueCol) {
+                                        burnValueCol = "8"; // Default to position 8 if not found
+                                    }
+
+                                    console.log("Using positional columns:", { characterCol, seriesCol, codeCol, burnValueCol });
                                 }
                             }
-                            return null;
+
+                            // If we still don't have columns, try using the first four columns as a last resort
+                            if (!characterCol && columnNames.length >= 1) characterCol = columnNames[0];
+                            if (!seriesCol && columnNames.length >= 2) seriesCol = columnNames[1];
+                            if (!codeCol && columnNames.length >= 3) codeCol = columnNames[2];
+                            if (!burnValueCol && columnNames.length >= 4) burnValueCol = columnNames[3];
+
+                            // Validate that we have at least character and code
+                            if (!characterCol || !codeCol) {
+                                console.error("Couldn't identify required columns");
+                                let message = "Could not identify the necessary columns in your CSV file. Please ensure your file has:\n\n";
+                                message += "- A column for character names\n";
+                                message += "- A column for card codes\n\n";
+                                message += "Columns found: " + columnNames.join(", ");
+
+                                alert(message);
+                                updateStatus("Error: Required columns not found in CSV");
+                                return;
+                            }
+
+                            // Process data to standardize column names
+                            try {
+                                const processedData = results.data
+                                    .filter(row => {
+                                        // Filter out rows that are empty or have no character/code
+                                        if (!row) return false;
+
+                                        const hasCharacter = row[characterCol] && String(row[characterCol]).trim() !== "";
+                                        const hasCode = row[codeCol] && String(row[codeCol]).trim() !== "";
+
+                                        return hasCharacter || hasCode;
+                                    })
+                                    .map((row, index) => {
+                                        let burnValue = 0;
+
+                                        // Try to parse burn value, handling different formats
+                                        if (burnValueCol && row[burnValueCol] !== undefined) {
+                                            const rawValue = row[burnValueCol];
+                                            if (typeof rawValue === 'number') {
+                                                burnValue = rawValue;
+                                            } else if (typeof rawValue === 'string') {
+                                                // Remove any non-numeric characters except decimal point
+                                                const cleanedValue = rawValue.replace(/[^0-9.]/g, '');
+                                                burnValue = parseFloat(cleanedValue) || 0;
+                                            }
+                                        }
+
+                                        return {
+                                            character: row[characterCol] ? String(row[characterCol]).trim() : `Unknown ${index}`,
+                                            series: seriesCol && row[seriesCol] ? String(row[seriesCol]).trim() : "Unknown",
+                                            code: row[codeCol] ? String(row[codeCol]).trim() : `unknown-${index}`,
+                                            burnValue: burnValue
+                                        };
+                                    });
+
+                                console.log(`Processed ${processedData.length} valid rows from CSV`);
+                                console.log("Sample of processed data:", processedData.slice(0, 3));
+
+                                if (processedData.length === 0) {
+                                    alert("No valid data could be extracted from the CSV file.");
+                                    updateStatus("Error: No valid data in CSV file");
+                                    return;
+                                }
+
+                                // Update state and UI
+                                window.state.cardsData = processedData;
+                                window.state.filteredCards = [...window.state.cardsData];
+                                applySort();
+                                updateStatus(`Loaded ${window.state.cardsData.length} cards successfully`);
+                                updateCardCounter(window.state.filteredCards.length);
+
+                                // Apply filter after loading cards since checkbox is checked by default
+                                if (elements.hideTaggedCards.checked) {
+                                    filterTaggedCards();
+                                }
+                            } catch (error) {
+                                console.error("Error processing CSV data:", error);
+                                alert(`Error processing CSV data: ${error.message}`);
+                                updateStatus("Error processing CSV data");
+                            }
+                        },
+                        error: function (error) {
+                            console.error("PapaParse error:", error);
+                            alert(`Error reading CSV file: ${error.message}`);
+                            updateStatus("Error reading CSV file");
                         }
-                        
-                        state.cardsData = processedData;
-                        
-                        // Show preview of processed data
-                        console.log('Processed data sample:', processedData.slice(0, 3));
-                        
-                        // Add a preview button for the user to check the data
-                        const previewBtn = document.createElement('button');
-                        previewBtn.className = 'btn btn-sm btn-outline-info mt-2';
-                        previewBtn.textContent = 'Preview Data';
-                        previewBtn.addEventListener('click', () => {
-                            showDataPreview(processedData.slice(0, 10));
-                        });
-                        
-                        // Add the button below the file input
-                        const fileInputParent = elements.csvFile.parentElement;
-                        if (!document.getElementById('preview-data-btn')) {
-                            previewBtn.id = 'preview-data-btn';
-                            fileInputParent.appendChild(previewBtn);
-                        }
-                        
-                        state.cardsData = data;
-                        state.filteredCards = [...state.cardsData];
-                        applySort();
-                        updateStatus(`Loaded ${state.cardsData.length} cards`);
-                        updateCardCounter(state.filteredCards.length);
-                    }
-                    
-                });
+                    });
+                };
+
+                reader.onerror = function () {
+                    console.error("FileReader error");
+                    alert("Error reading the file. The file might be corrupted or too large.");
+                    updateStatus("Error reading file");
+                };
+
+                // Read the file as text
+                reader.readAsText(file);
             }
-            
+
+            // Improved column finder function
+            function findColumn(columns, possibleNames) {
+                // First try exact matches
+                for (const name of possibleNames) {
+                    if (columns.includes(name)) {
+                        return name;
+                    }
+                }
+
+                // Then try case-insensitive matches
+                for (const name of possibleNames) {
+                    const lowerName = name.toLowerCase();
+                    const match = columns.find(col =>
+                        typeof col === 'string' && col.toLowerCase() === lowerName);
+                    if (match) {
+                        return match;
+                    }
+                }
+
+                // Then try partial matches
+                for (const name of possibleNames) {
+                    const lowerName = name.toLowerCase();
+                    const match = columns.find(col =>
+                        typeof col === 'string' && col.toLowerCase().includes(lowerName));
+                    if (match) {
+                        return match;
+                    }
+                }
+
+                // Try matches where column includes the name
+                for (const name of possibleNames) {
+                    const lowerName = name.toLowerCase();
+                    const match = columns.find(col =>
+                        typeof col === 'string' && lowerName.includes(col.toLowerCase()));
+                    if (match) {
+                        return match;
+                    }
+                }
+
+                return null;
+            }
+
             function updateCardCounter(count) {
                 elements.cardCounter.textContent = `${count} cards`;
             }
-            
-            function applySort() {
-                if (state.cardsData.length === 0) return;
-                
-                if (elements.sortCheck.checked) {
-                    const ascending = elements.sortAsc.checked;
-                    state.filteredCards.sort((a, b) => {
-                        // Ensure burnValue is a number
-                        const burnA = typeof a.burnValue === 'number' ? a.burnValue : parseFloat(a.burnValue) || 0;
-                        const burnB = typeof b.burnValue === 'number' ? b.burnValue : parseFloat(b.burnValue) || 0;
-                        
-                        return ascending ? burnA - burnB : burnB - burnA;
-                    });
-                }
-                
-                displayCardList();
-            }
-            
-            function filterCards() {
+
+            // Simplified filter - only handles search, not tag filtering
+            function applySearchFilter() {
+                if (!window.state.cardsData || window.state.cardsData.length === 0) return;
+
                 const searchTerm = elements.searchInput.value.toLowerCase();
-                
-                if (searchTerm === '') {
-                    state.filteredCards = [...state.cardsData];
-                } else {
-                    state.filteredCards = state.cardsData.filter(card => 
-                        (card.character && card.character.toLowerCase().includes(searchTerm)) || 
+
+                // Start with all cards
+                window.state.filteredCards = [...window.state.cardsData];
+
+                // Apply search filter if any
+                if (searchTerm !== '') {
+                    window.state.filteredCards = window.state.filteredCards.filter(card =>
+                        (card.character && card.character.toLowerCase().includes(searchTerm)) ||
                         (card.series && card.series.toLowerCase().includes(searchTerm))
                     );
                 }
-                
+
                 applySort();
-                updateStatus(`Found ${state.filteredCards.length} cards matching '${searchTerm}'`);
-                updateCardCounter(state.filteredCards.length);
+                updateStatus(`Found ${window.state.filteredCards.length} cards matching '${searchTerm}'`);
+                updateCardCounter(window.state.filteredCards.length);
+
+                // After applying search, also apply the tag filter if active
+                if (elements.hideTaggedCards.checked) {
+                    filterTaggedCards();
+                }
             }
-            
+
+            function applySort() {
+                if (window.state.filteredCards.length === 0) return;
+
+                if (elements.sortCheck.checked) {
+                    const ascending = elements.sortAsc.checked;
+                    window.state.filteredCards.sort((a, b) => {
+                        // Ensure burnValue is a number
+                        const burnA = typeof a.burnValue === 'number' ? a.burnValue : parseFloat(a.burnValue) || 0;
+                        const burnB = typeof b.burnValue === 'number' ? b.burnValue : parseFloat(b.burnValue) || 0;
+
+                        return ascending ? burnA - burnB : burnB - burnA;
+                    });
+                }
+
+                displayCardList();
+            }
+
             function displayCardList() {
                 elements.cardList.innerHTML = '';
-                
-                if (state.filteredCards.length === 0) {
+                if (window.state.filteredCards.length === 0) {
                     elements.cardList.innerHTML = '<div class="text-center p-4 text-muted">No cards found</div>';
                     return;
                 }
-                
-                state.filteredCards.forEach(card => {
+
+                window.state.filteredCards.forEach(card => {
                     const cardItem = document.createElement('div');
                     cardItem.className = 'card-item';
-                    
+
                     // Format burn value 
                     const burnValue = typeof card.burnValue === 'number' ? card.burnValue : parseFloat(card.burnValue) || 0;
                     const formattedBurn = Math.floor(burnValue);
-                    
+
                     cardItem.textContent = `${formattedBurn} $ | ${card.character} (${card.series})`;
                     cardItem.dataset.code = card.code;
-                    
+
                     cardItem.addEventListener('click', () => {
                         // Remove selected class from all items
                         document.querySelectorAll('.card-item').forEach(item => {
                             item.classList.remove('selected');
                         });
-                        
+
                         // Add selected class to this item
                         cardItem.classList.add('selected');
-                        
+
                         // Display card details
                         displayCardDetails(card);
                     });
-                    
+
                     elements.cardList.appendChild(cardItem);
                 });
+
+                // After displaying the list, apply tag filter if checked
+                if (elements.hideTaggedCards.checked) {
+                    filterTaggedCards();
+                }
             }
-            
+
             function displayCardDetails(card) {
-                state.selectedCard = card;
-                
+                window.state.selectedCard = card;
+
                 elements.characterName.textContent = card.character || 'Unknown';
                 elements.seriesName.textContent = card.series || 'Unknown';
                 elements.cardCode.textContent = card.code || 'Unknown';
-                
+
                 // Format burn value
                 const burnValue = typeof card.burnValue === 'number' ? card.burnValue : parseFloat(card.burnValue) || 0;
                 const formattedBurn = Math.floor(burnValue);
                 elements.burnValue.textContent = `${formattedBurn} $`;
-                
+
                 // Clear the image container
                 elements.imageContainer.innerHTML = '<div class="placeholder-img">Click "Generate Image" to see image options</div>';
-                
+
                 // Update current tags for this card
                 updateCurrentCardTags();
-                
-                updateStatus(`Selected card: ${card.character} from ${card.series}`);
+
+                // Don't update status with selected card info to avoid cluttering status bar
             }
-            
+
             function updateCurrentCardTags() {
-                if (!state.selectedCard) {
+                if (!window.state.selectedCard) {
                     elements.currentCardTags.innerHTML = 'None';
                     return;
                 }
-                
-                const code = state.selectedCard.code;
+
+                const code = window.state.selectedCard.code;
                 const cardTags = [];
-                
+
                 // Check standard tags
-                for (const [tag, cards] of Object.entries(state.tagCards)) {
+                for (const [tag, cards] of Object.entries(window.state.tagCards)) {
                     if (cards.has(code)) {
                         cardTags.push(`<span class="tag-badge ${tag}">${tag.replace('_', ' ').toUpperCase()}</span>`);
                     }
                 }
-                
+
                 // Check custom tags
-                for (const [tag, cards] of Object.entries(state.customTags)) {
+                for (const [tag, cards] of Object.entries(window.state.customTags)) {
                     if (cards.has(code)) {
                         cardTags.push(`<span class="tag-badge custom">${tag.toUpperCase()}</span>`);
                     }
                 }
-                
+
                 if (cardTags.length > 0) {
                     elements.currentCardTags.innerHTML = cardTags.join('');
                 } else {
                     elements.currentCardTags.innerHTML = 'None';
                 }
             }
-            
+
             function generateImage() {
-                if (!state.selectedCard) {
+                if (!window.state.selectedCard) {
                     alert('Please select a card first');
                     return;
                 }
-                
-                const card = state.selectedCard;
+
+                const card = window.state.selectedCard;
                 const searchKey = `${card.character}|${card.series}`;
-                
+
                 // Clear the image container and show loading message
                 elements.imageContainer.innerHTML = '<div class="text-center">Generating images...<br>Please wait...</div>';
                 updateStatus(`Generating images for ${card.character} from ${card.series}...`);
-                
+
                 // Check cache first
-                if (state.searchResults[searchKey] && state.searchResults[searchKey].length > 0) {
-                    state.currentResultIndex = 0;
-                    displayImage(state.searchResults[searchKey][0]);
-                    updateStatus(`Showing image 1 of ${state.searchResults[searchKey].length}`);
+                if (window.state.searchResults[searchKey] && window.state.searchResults[searchKey].length > 0) {
+                    window.state.currentResultIndex = 0;
+                    displayImage(window.state.searchResults[searchKey][0]);
+                    updateStatus(`Showing image 1 of ${window.state.searchResults[searchKey].length}`);
                     return;
                 }
-                
+
                 // Generate placeholder images
                 setTimeout(() => {
                     const placeholderImages = generatePlaceholderImages(card.character, card.series);
-                    state.searchResults[searchKey] = placeholderImages;
-                    state.currentResultIndex = 0;
-                    
+                    window.state.searchResults[searchKey] = placeholderImages;
+                    window.state.currentResultIndex = 0;
+
                     if (placeholderImages.length > 0) {
                         displayImage(placeholderImages[0]);
                         updateStatus(`Showing image 1 of ${placeholderImages.length}`);
@@ -798,152 +906,164 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }, 500);  // Small delay to simulate processing
             }
-            
+
             function generatePlaceholderImages(character, series) {
                 // Since we can't do actual image search in a frontend-only version,
                 // we'll create placeholder images with character/series info
-                
+
                 // Create deterministic number of images based on character/series
                 const characterSeed = character.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
                 const seriesSeed = series.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
                 const combinedSeed = (characterSeed + seriesSeed) % 100;
-                
+
                 // Generate 3-7 images based on the seed
                 const numImages = 3 + (combinedSeed % 5);
                 const images = [];
-                
+
                 for (let i = 0; i < numImages; i++) {
                     // Create HTML for a colored placeholder with character/series info
                     const hue = (combinedSeed * (i + 1)) % 360;
                     const image = createColorPlaceholder(character, series, i, hue);
                     images.push(image);
                 }
-                
+
                 return images;
             }
-            
+
             function createColorPlaceholder(character, series, index, hue) {
                 // Create a colored div with character and series info
                 const saturation = 70 + (index * 5);
                 const lightness = 65 - (index * 5);
-                
+
                 return `
-                    <div style="width:100%;height:100%;background-color:hsl(${hue},${saturation}%,${lightness}%);
-                        display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px;text-align:center;color:white;">
-                        <div style="font-size:1.4rem;font-weight:bold;text-shadow:1px 1px 3px rgba(0,0,0,0.5);margin-bottom:10px;">
-                            ${character}
-                        </div>
-                        <div style="font-size:1.1rem;text-shadow:1px 1px 3px rgba(0,0,0,0.5);">
-                            ${series}
-                        </div>
-                        <div style="margin-top:20px;font-size:0.9rem;opacity:0.8;">
-                            Image ${index + 1} - No actual image search in frontend-only version
-                        </div>
+                <div style="width:100%;height:100%;background-color:hsl(${hue},${saturation}%,${lightness}%);
+                    display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px;text-align:center;color:white;">
+                    <div style="font-size:1.4rem;font-weight:bold;text-shadow:1px 1px 3px rgba(0,0,0,0.5);margin-bottom:10px;">
+                        ${character}
                     </div>
-                `;
+                    <div style="font-size:1.1rem;text-shadow:1px 1px 3px rgba(0,0,0,0.5);">
+                        ${series}
+                    </div>
+                    <div style="margin-top:20px;font-size:0.9rem;opacity:0.8;">
+                        Image ${index + 1} - No actual image search in frontend-only version
+                    </div>
+                </div>
+            `;
             }
-            
+
             function displayImage(imageHTML) {
                 // Set the image HTML directly
                 elements.imageContainer.innerHTML = imageHTML;
-                
+
                 // Update status
-                const resultIndex = state.currentResultIndex + 1;
-                const searchKey = `${state.selectedCard.character}|${state.selectedCard.series}`;
-                const totalResults = state.searchResults[searchKey].length;
+                const resultIndex = window.state.currentResultIndex + 1;
+                const searchKey = `${window.state.selectedCard.character}|${window.state.selectedCard.series}`;
+                const totalResults = window.state.searchResults[searchKey].length;
                 updateStatus(`Showing image ${resultIndex} of ${totalResults}`);
             }
-            
+
             function showNextImage() {
-                if (!state.selectedCard) return;
-                
-                const searchKey = `${state.selectedCard.character}|${state.selectedCard.series}`;
-                if (!state.searchResults[searchKey] || state.searchResults[searchKey].length === 0) {
+                if (!window.state.selectedCard) return;
+
+                const searchKey = `${window.state.selectedCard.character}|${window.state.selectedCard.series}`;
+                if (!window.state.searchResults[searchKey] || window.state.searchResults[searchKey].length === 0) {
                     generateImage();
                     return;
                 }
-                
-                const images = state.searchResults[searchKey];
-                state.currentResultIndex = (state.currentResultIndex + 1) % images.length;
-                displayImage(images[state.currentResultIndex]);
-                
+
+                const images = window.state.searchResults[searchKey];
+                window.state.currentResultIndex = (window.state.currentResultIndex + 1) % images.length;
+                displayImage(images[window.state.currentResultIndex]);
+
                 // Update status with current image index
-                updateStatus(`Showing image ${state.currentResultIndex + 1} of ${images.length}`);
+                updateStatus(`Showing image ${window.state.currentResultIndex + 1} of ${images.length}`);
             }
-            
+
             function tagCurrentCard(tag) {
-                if (!state.selectedCard) {
+                if (!window.state.selectedCard) {
                     alert('Please select a card first');
                     return;
                 }
-                
-                const code = state.selectedCard.code;
-                state.tagCards[tag].add(code);
-                
+
+                const code = window.state.selectedCard.code;
+                window.state.tagCards[tag].add(code);
+
                 updateTagStatus();
                 updateCurrentCardTags();
+
+                // Apply filter if checkbox is checked
+                if (elements.hideTaggedCards.checked) {
+                    filterTaggedCards();
+                }
+
                 updateStatus(`Card ${code} tagged as '${tag}'`);
             }
-            
+
             function addCustomTag() {
-                if (!state.selectedCard) {
+                if (!window.state.selectedCard) {
                     alert('Please select a card first');
                     return;
                 }
-                
+
                 const customTag = elements.customTagInput.value.trim().toLowerCase();
-                
+
                 if (!customTag) {
                     alert('Please enter a custom tag name');
                     return;
                 }
-                
+
                 // Initialize the custom tag if it doesn't exist
-                if (!state.customTags[customTag]) {
-                    state.customTags[customTag] = new Set();
+                if (!window.state.customTags[customTag]) {
+                    window.state.customTags[customTag] = new Set();
                 }
-                
-                const code = state.selectedCard.code;
-                state.customTags[customTag].add(code);
-                
+
+                const code = window.state.selectedCard.code;
+                window.state.customTags[customTag].add(code);
+
                 elements.customTagInput.value = '';
                 updateTagStatus();
                 updateCurrentCardTags();
+
+                // Apply filter if checkbox is checked
+                if (elements.hideTaggedCards.checked) {
+                    filterTaggedCards();
+                }
+
                 updateStatus(`Card ${code} tagged as '${customTag}'`);
             }
-            
+
             function updateTagStatus() {
                 const status = [];
-                
+
                 // Standard tags
-                for (const [tag, cards] of Object.entries(state.tagCards)) {
+                for (const [tag, cards] of Object.entries(window.state.tagCards)) {
                     if (cards.size > 0) {
                         status.push(`<span class="tag-badge ${tag}">${tag.replace('_', ' ').toUpperCase()}: ${cards.size}</span>`);
                     }
                 }
-                
+
                 // Custom tags
-                for (const [tag, cards] of Object.entries(state.customTags)) {
+                for (const [tag, cards] of Object.entries(window.state.customTags)) {
                     if (cards.size > 0) {
                         status.push(`<span class="tag-badge custom">${tag.toUpperCase()}: ${cards.size}</span>`);
                     }
                 }
-                
+
                 if (status.length > 0) {
                     elements.tagStatus.innerHTML = status.join('');
                 } else {
                     elements.tagStatus.innerHTML = 'None';
                 }
             }
-            
+
             function showTagSelectionModal() {
                 // Populate the tag list
                 elements.tagList.innerHTML = '';
-                
+
                 let hasAnyTags = false;
-                
+
                 // Add standard tags
-                for (const [tag, cards] of Object.entries(state.tagCards)) {
+                for (const [tag, cards] of Object.entries(window.state.tagCards)) {
                     if (cards.size > 0) {
                         const item = document.createElement('button');
                         item.className = 'list-group-item list-group-item-action';
@@ -954,9 +1074,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         hasAnyTags = true;
                     }
                 }
-                
+
                 // Add custom tags
-                for (const [tag, cards] of Object.entries(state.customTags)) {
+                for (const [tag, cards] of Object.entries(window.state.customTags)) {
                     if (cards.size > 0) {
                         const item = document.createElement('button');
                         item.className = 'list-group-item list-group-item-action';
@@ -967,17 +1087,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         hasAnyTags = true;
                     }
                 }
-                
+
                 if (!hasAnyTags) {
                     alert('No tags available. Please tag some cards first.');
                     return;
                 }
-                
+
                 // Select the first item by default
                 if (elements.tagList.children.length > 0) {
                     elements.tagList.children[0].classList.add('active');
                 }
-                
+
                 // Handle item selection
                 elements.tagList.querySelectorAll('.list-group-item').forEach(item => {
                     item.addEventListener('click', () => {
@@ -985,53 +1105,53 @@ document.addEventListener('DOMContentLoaded', function() {
                         elements.tagList.querySelectorAll('.list-group-item').forEach(i => {
                             i.classList.remove('active');
                         });
-                        
+
                         // Add active class to this item
                         item.classList.add('active');
                     });
                 });
-                
+
                 // Show the modal
                 elements.tagModal.show();
             }
-            
+
             function generateCommand() {
                 const activeItem = elements.tagList.querySelector('.list-group-item.active');
                 if (!activeItem) {
                     alert('Please select a tag');
                     return;
                 }
-                
+
                 const tag = activeItem.dataset.tag;
                 const isCustom = activeItem.dataset.isCustom === 'true';
-                
+
                 // Get the cards for this tag
-                const cards = isCustom ? state.customTags[tag] : state.tagCards[tag];
-                
+                const cards = isCustom ? window.state.customTags[tag] : window.state.tagCards[tag];
+
                 if (cards.size === 0) {
                     alert(`No cards tagged as '${tag}'`);
                     return;
                 }
-                
+
                 // Generate the command
                 const cardCodes = Array.from(cards).sort().join(',');
                 const command = `kt ${tag} ${cardCodes}`;
                 elements.commandOutput.value = command;
-                
+
                 // Close the modal
                 elements.tagModal.hide();
-                
+
                 // Show confirmation
                 updateStatus(`Generated command for ${cards.size} cards tagged as '${tag}'`);
             }
-            
+
             function copyCommand() {
                 const command = elements.commandOutput.value;
                 if (!command) {
                     alert('No command generated yet');
                     return;
                 }
-                
+
                 // Copy to clipboard
                 navigator.clipboard.writeText(command)
                     .then(() => {
@@ -1043,66 +1163,72 @@ document.addEventListener('DOMContentLoaded', function() {
                         elements.commandOutput.select();
                     });
             }
-            
+
             function clearAllTags() {
                 if (!confirm('Clear all tagged cards?')) {
                     return;
                 }
-                
+
                 // Clear standard tags
-                for (const tag in state.tagCards) {
-                    state.tagCards[tag].clear();
+                for (const tag in window.state.tagCards) {
+                    window.state.tagCards[tag].clear();
                 }
-                
+
                 // Clear custom tags
-                state.customTags = {};
-                
+                window.state.customTags = {};
+
                 updateTagStatus();
                 updateCurrentCardTags();
                 elements.commandOutput.value = '';
+
+                // Reapply filter (which should now show all cards)
+                if (elements.hideTaggedCards.checked) {
+                    filterTaggedCards();
+                }
+
                 updateStatus('All tags cleared');
             }
-            
+
             function updateStatus(message) {
                 elements.statusBar.textContent = message;
                 console.log(message);
             }
-            
+
             // Export functionality
             function exportTagsToJson() {
                 const exportData = {
                     standardTags: {},
                     customTags: {}
                 };
-                
+
                 // Export standard tags
-                for (const [tag, cards] of Object.entries(state.tagCards)) {
+                for (const [tag, cards] of Object.entries(window.state.tagCards)) {
                     if (cards.size > 0) {
                         exportData.standardTags[tag] = Array.from(cards);
                     }
                 }
-                
-                // Export custom tags
-                for (const [tag, cards] of Object.entries(state.customTags)) {
+
+                // Custom tags
+                for (const [tag, cards] of Object.entries(window.state.customTags)) {
                     if (cards.size > 0) {
                         exportData.customTags[tag] = Array.from(cards);
                     }
                 }
-                
+
                 // Create download link
                 const dataStr = JSON.stringify(exportData, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                
+                const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
                 const exportFileDefaultName = 'karuta_tags.json';
-                
+
                 const linkElement = document.createElement('a');
                 linkElement.setAttribute('href', dataUri);
                 linkElement.setAttribute('download', exportFileDefaultName);
                 linkElement.click();
-                
+
                 updateStatus('Tags exported to JSON file');
             }
-            
+
             // Add export button to UI
             const exportButton = document.createElement('button');
             exportButton.className = 'btn btn-sm btn-info position-fixed';
@@ -1111,30 +1237,96 @@ document.addEventListener('DOMContentLoaded', function() {
             exportButton.innerHTML = '<i class="bi bi-download"></i> Export Tags';
             exportButton.addEventListener('click', exportTagsToJson);
             document.body.appendChild(exportButton);
-            
+
             // Initialize the application
             updateStatus('Ready - Please upload a CSV file to begin');
+
+            // This is the key function that filters out tagged cards
+            function filterTaggedCards() {
+                console.log("Filter executing: show only untagged cards");
+
+                if (!elements.hideTaggedCards) {
+                    console.error("Filter checkbox not found!");
+                    return;
+                }
+
+                const showOnlyUntagged = elements.hideTaggedCards.checked;
+                console.log("Show only untagged cards:", showOnlyUntagged);
+
+                // For debugging - log tag counts
+                let taggedCardCount = 0;
+                for (const tagName in window.state.tagCards) {
+                    if (window.state.tagCards[tagName].size > 0) {
+                        console.log(`Tag ${tagName}: ${window.state.tagCards[tagName].size} cards`);
+                        taggedCardCount += window.state.tagCards[tagName].size;
+                    }
+                }
+                console.log(`Total tagged cards: ${taggedCardCount}`);
+
+                // Get all card DOM elements
+                const cardElements = document.querySelectorAll('.card-item');
+                console.log(`Found ${cardElements.length} card elements in DOM`);
+
+                let visibleCount = 0;
+
+                // Process each card element directly
+                cardElements.forEach(cardElement => {
+                    const cardCode = cardElement.dataset.code;
+                    if (!cardCode) return;
+
+                    let isTagged = false;
+
+                    // Check if card has any standard tag
+                    for (const tagName in window.state.tagCards) {
+                        const tagSet = window.state.tagCards[tagName];
+                        if (tagSet && tagSet.has && tagSet.has(cardCode)) {
+                            isTagged = true;
+                            break;
+                        }
+                    }
+
+                    // Check if card has any custom tag
+                    if (!isTagged) {
+                        for (const tagName in window.state.customTags) {
+                            const tagSet = window.state.customTags[tagName];
+                            if (tagSet && tagSet.has && tagSet.has(cardCode)) {
+                                isTagged = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Apply visibility based on filter settings
+                    if (showOnlyUntagged && isTagged) {
+                        cardElement.style.display = 'none';
+                    } else {
+                        cardElement.style.display = '';
+                        visibleCount++;
+                    }
+                });
+
+                // Update the counter
+                elements.cardCounter.textContent = `${visibleCount} cards`;
+                console.log(`Filter applied: ${visibleCount} of ${cardElements.length} cards visible`);
+            }
+
+            // Add event listener for the checkbox
+            if (elements.hideTaggedCards) {
+                elements.hideTaggedCards.addEventListener('change', function () {
+                    console.log("Show only untagged checkbox changed:", this.checked);
+                    filterTaggedCards();
+                });
+            }
+
+            // Apply filter on startup if checkbox is checked (which it should be by default)
+            setTimeout(() => {
+                if (elements.hideTaggedCards && elements.hideTaggedCards.checked) {
+                    console.log("Applying initial filter");
+                    filterTaggedCards();
+                }
+            }, 500);
         });
-    
-document.addEventListener('DOMContentLoaded', function() {
-    const elements = {
-        filterTags: document.querySelectorAll('.tag-filter')
-    };
-
-    elements.filterTags.forEach(checkbox => checkbox.addEventListener('change', filterCards));
-
-    function filterCards() {
-        const hiddenTags = Array.from(elements.filterTags)
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
-
-        document.querySelectorAll('.card-item').forEach(card => {
-            const cardCode = card.dataset.code;
-            const hasHiddenTag = hiddenTags.some(tag => state.tagCards[tag]?.has(cardCode));
-            card.style.display = hasHiddenTag ? 'none' : '';
-        });
-    }
-});
-
-</script>
+    </script>
 </body>
+
+</html>

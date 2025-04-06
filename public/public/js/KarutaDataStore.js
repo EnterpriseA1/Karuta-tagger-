@@ -1,17 +1,12 @@
 /**
- * Karuta application data store
+ * Data store for Karuta card information
  */
 const karutaDataStore = {
-    // Card data
     cardsData: [],
     filteredCards: [],
     selectedCard: null,
     
-    // Image search results
-    searchResults: {},
-    currentResultIndex: 0,
-    
-    // Tag collections
+    // Standard tags
     tagCards: {
         waifus: new Set(),
         collected_series: new Set(),
@@ -20,107 +15,142 @@ const karutaDataStore = {
         burnburn: new Set()
     },
     
-    // Custom tags storage
-    customTags: {},  // Format: {tagName: Set([codes])}
+    // Custom tags (structure: { tagName: Set of card codes })
+    customTags: {},
     
     /**
-     * Initializes the state
+     * Loads card data from CSV
+     * @param {Array} data - Array of card objects
      */
-    init() {
-        this.cardsData = [];
-        this.filteredCards = [];
-        this.selectedCard = null;
-        this.searchResults = {};
-        this.currentResultIndex = 0;
+    loadData(data) {
+        this.cardsData = data.map(card => {
+            return {
+                code: card.code || '',
+                character: card.character || 'Unknown',
+                series: card.series || 'Unknown',
+                burnValue: card.burnValue || 0,
+                edition: card.edition || 0,
+                quality: card.quality || 0,
+                dye: card['dye.name'] || '',
+                frame: card.frame || '',
+                tag: card.tag || '',
+                alias: card.alias || '',
+                wishlists: card.wishlists || 0,
+                worker: {
+                    effort: card['worker.effort'] || 0,
+                    style: card['worker.style'] || '',
+                    purity: card['worker.purity'] || '',
+                    grabber: card['worker.grabber'] || '',
+                    dropper: card['worker.dropper'] || '',
+                    quickness: card['worker.quickness'] || '',
+                    toughness: card['worker.toughness'] || '',
+                    vanity: card['worker.vanity'] || ''
+                }
+            };
+        });
         
-        // Reset tag collections
+        this.filteredCards = [...this.cardsData];
+    },
+    
+    /**
+     * Tags a card with a standard tag
+     * @param {string} cardCode - The card code
+     * @param {string} tag - The tag to apply
+     */
+    tagCard(cardCode, tag) {
+        if (!cardCode || !tag) return;
+        
+        // Validate tag name
+        if (!this.tagCards.hasOwnProperty(tag)) {
+            ui.updateStatus(`Invalid tag: ${tag}`);
+            return;
+        }
+        
+        // Add card to tag set
+        this.tagCards[tag].add(cardCode);
+        
+        // Update UI
+        ui.updateCurrentCardTags();
+        ui.updateTagStatus();
+        ui.updateStatus(`Card ${cardCode} tagged as ${tag}`);
+    },
+    
+    /**
+     * Adds a custom tag to a card
+     * @param {string} cardCode - The card code
+     * @param {string} customTag - The custom tag to apply
+     */
+    addCustomTag(cardCode, customTag) {
+        if (!cardCode || !customTag) return;
+        
+        // Create the custom tag set if it doesn't exist
+        if (!this.customTags[customTag]) {
+            this.customTags[customTag] = new Set();
+        }
+        
+        // Add card to custom tag set
+        this.customTags[customTag].add(cardCode);
+        
+        // Update UI
+        ui.updateCurrentCardTags();
+        ui.updateTagStatus();
+        ui.updateStatus(`Card ${cardCode} tagged as ${customTag}`);
+    },
+    
+    /**
+     * Removes all tags from a card
+     * @param {string} cardCode - The card code
+     */
+    clearCardTags(cardCode) {
+        if (!cardCode) return;
+        
+        // Remove from standard tags
         for (const tag in this.tagCards) {
-            this.tagCards[tag] = new Set();
+            this.tagCards[tag].delete(cardCode);
         }
         
-        this.customTags = {};
-    },
-    
-    /**
-     * Sets cards data and initializes filtered cards
-     * @param {Array} data - The card data to set
-     */
-    setCardsData(data) {
-        this.cardsData = data;
-        this.filteredCards = [...data];
-    },
-    
-    /**
-     * Adds a tag to a card
-     * @param {string} tag - The tag to add
-     * @param {string} cardCode - The card code to tag
-     * @param {boolean} isCustom - Whether this is a custom tag
-     */
-    addTagToCard(tag, cardCode, isCustom = false) {
-        if (isCustom) {
-            // Initialize the custom tag if it doesn't exist
-            if (!this.customTags[tag]) {
-                this.customTags[tag] = new Set();
-            }
-            this.customTags[tag].add(cardCode);
-        } else {
-            // Add to standard tags
-            if (this.tagCards[tag]) {
-                this.tagCards[tag].add(cardCode);
+        // Remove from custom tags
+        for (const tag in this.customTags) {
+            this.customTags[tag].delete(cardCode);
+            
+            // Remove empty custom tag sets
+            if (this.customTags[tag].size === 0) {
+                delete this.customTags[tag];
             }
         }
+        
+        // Update UI
+        ui.updateCurrentCardTags();
+        ui.updateTagStatus();
+        ui.updateStatus(`Cleared all tags from card ${cardCode}`);
     },
     
     /**
-     * Gets all tags applied to a specific card
-     * @param {string} cardCode - The card code to check
-     * @returns {Array} Array of tag objects with {name, type}
+     * Gets all tags for a specific card
+     * @param {string} cardCode - The card code
+     * @returns {Array} Array of tag objects with name and type
      */
     getCardTags(cardCode) {
-        const tags = [];
+        if (!cardCode) return [];
         
-        // Check standard tags
-        for (const [tag, cards] of Object.entries(this.tagCards)) {
-            if (cards.has(cardCode)) {
-                tags.push({ name: tag, type: 'standard' });
-            }
-        }
-        
-        // Check custom tags
-        for (const [tag, cards] of Object.entries(this.customTags)) {
-            if (cards.has(cardCode)) {
-                tags.push({ name: tag, type: 'custom' });
-            }
-        }
-        
-        return tags;
-    },
-    
-    /**
-     * Gets all tags that have at least one card
-     * @returns {Array} Array of tag objects with {name, type, count}
-     */
-    getAllTags() {
         const tags = [];
         
         // Add standard tags
-        for (const [tag, cards] of Object.entries(this.tagCards)) {
-            if (cards.size > 0) {
+        for (const tag in this.tagCards) {
+            if (this.tagCards[tag].has(cardCode)) {
                 tags.push({
                     name: tag,
-                    type: 'standard',
-                    count: cards.size
+                    type: 'standard'
                 });
             }
         }
         
         // Add custom tags
-        for (const [tag, cards] of Object.entries(this.customTags)) {
-            if (cards.size > 0) {
+        for (const tag in this.customTags) {
+            if (this.customTags[tag].has(cardCode)) {
                 tags.push({
                     name: tag,
-                    type: 'custom',
-                    count: cards.size
+                    type: 'custom'
                 });
             }
         }
@@ -129,54 +159,53 @@ const karutaDataStore = {
     },
     
     /**
-     * Gets all cards tagged with a specific tag
-     * @param {string} tag - The tag to check
-     * @param {boolean} isCustom - Whether this is a custom tag
-     * @returns {Set} Set of card codes
+     * Gets all tags with their card counts
+     * @returns {Array} Array of tag objects with name, type, and count
      */
-    getCardsByTag(tag, isCustom = false) {
-        if (isCustom) {
-            return this.customTags[tag] || new Set();
-        } else {
-            return this.tagCards[tag] || new Set();
-        }
-    },
-    
-    /**
-     * Clears all tags from all cards
-     */
-    clearAllTags() {
-        // Clear standard tags
+    getAllTags() {
+        const tags = [];
+        
+        // Add standard tags
         for (const tag in this.tagCards) {
-            this.tagCards[tag].clear();
+            if (this.tagCards[tag].size > 0) {
+                tags.push({
+                    name: tag,
+                    type: 'standard',
+                    count: this.tagCards[tag].size
+                });
+            }
         }
         
-        // Clear custom tags
-        this.customTags = {};
+        // Add custom tags
+        for (const tag in this.customTags) {
+            tags.push({
+                name: tag,
+                type: 'custom',
+                count: this.customTags[tag].size
+            });
+        }
+        
+        return tags;
     },
     
     /**
      * Exports tag data to JSON
-     * @returns {Object} Export data object
+     * @returns {Object} Tag data JSON object
      */
     exportTags() {
         const exportData = {
-            standardTags: {},
+            tagCards: {},
             customTags: {}
         };
         
-        // Export standard tags
-        for (const [tag, cards] of Object.entries(this.tagCards)) {
-            if (cards.size > 0) {
-                exportData.standardTags[tag] = Array.from(cards);
-            }
+        // Convert standard tag sets to arrays
+        for (const tag in this.tagCards) {
+            exportData.tagCards[tag] = Array.from(this.tagCards[tag]);
         }
         
-        // Export custom tags
-        for (const [tag, cards] of Object.entries(this.customTags)) {
-            if (cards.size > 0) {
-                exportData.customTags[tag] = Array.from(cards);
-            }
+        // Convert custom tag sets to arrays
+        for (const tag in this.customTags) {
+            exportData.customTags[tag] = Array.from(this.customTags[tag]);
         }
         
         return exportData;
@@ -184,23 +213,35 @@ const karutaDataStore = {
     
     /**
      * Imports tag data from JSON
-     * @param {Object} importData - The data to import
+     * @param {Object} data - Tag data JSON object
      */
-    importTags(importData) {
+    importTags(data) {
+        if (!data || !data.tagCards || !data.customTags) {
+            ui.updateStatus('Invalid tag data format');
+            return;
+        }
+        
+        // Clear existing tags
+        for (const tag in this.tagCards) {
+            this.tagCards[tag].clear();
+        }
+        this.customTags = {};
+        
         // Import standard tags
-        if (importData.standardTags) {
-            for (const [tag, cards] of Object.entries(importData.standardTags)) {
-                if (this.tagCards[tag]) {
-                    this.tagCards[tag] = new Set(cards);
-                }
+        for (const tag in data.tagCards) {
+            if (this.tagCards.hasOwnProperty(tag)) {
+                this.tagCards[tag] = new Set(data.tagCards[tag]);
             }
         }
         
         // Import custom tags
-        if (importData.customTags) {
-            for (const [tag, cards] of Object.entries(importData.customTags)) {
-                this.customTags[tag] = new Set(cards);
-            }
+        for (const tag in data.customTags) {
+            this.customTags[tag] = new Set(data.customTags[tag]);
         }
+        
+        // Update UI
+        ui.updateCurrentCardTags();
+        ui.updateTagStatus();
+        ui.updateStatus('Tags imported successfully');
     }
 };

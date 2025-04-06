@@ -6,7 +6,7 @@
  */
 
 // Redirect to the main application page
-window.location.href = './public/index.html';
+window.location.href = './public/public/index.html';
 
 // If the redirect doesn't work (for example, if this file is loaded directly in the browser),
 // this code will run after a short delay
@@ -15,6 +15,6 @@ setTimeout(() => {
       window.location.pathname.endsWith('src/') || 
       window.location.pathname.endsWith('src')) {
     console.log('Redirecting to main application...');
-    window.location.replace('./public/index.html');
+    window.location.replace('./public/public/index.html');
   }
 }, 100);

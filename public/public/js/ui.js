@@ -37,7 +37,7 @@ const ui = {
             customTagInput: document.getElementById('customTagInput'),
             addCustomTagBtn: document.getElementById('addCustomTagBtn'),
             currentCardTags: document.getElementById('currentCardTags'),
-            filterTags: document.querySelectorAll('.tag-filter')
+            hideTaggedCheck: document.getElementById('hideTaggedCheck')
         };
         
         // Tag buttons
@@ -65,8 +65,7 @@ const ui = {
         
         // Search and filter
         this.elements.searchInput.addEventListener('input', cardHandler.filterCards);
-        this.elements.filterTags.forEach(checkbox => 
-            checkbox.addEventListener('change', cardHandler.filterCardsByTag));
+        this.elements.hideTaggedCheck.addEventListener('change', cardHandler.filterCardsByTag);
         
         // Sorting
         this.elements.sortCheck.addEventListener('change', cardHandler.applySort);

@@ -43,19 +43,35 @@ const cardHandler = {
     },
     
     /**
-     * Filters cards based on tag filter checkboxes
+     * Filters cards to hide those with any tags if checkbox is checked
      */
     filterCardsByTag() {
-        const hiddenTags = Array.from(ui.elements.filterTags)
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
+        // Get the state of the hide tagged checkbox
+        const hideTagged = document.getElementById('hideTaggedCheck').checked;
         
+        if (!hideTagged) {
+            // Show all cards if checkbox is not checked
+            document.querySelectorAll('.card-item').forEach(card => {
+                card.style.display = '';
+            });
+            return;
+        }
+        
+        // Hide cards WITH tags (reverse of previous functionality)
         document.querySelectorAll('.card-item').forEach(card => {
             const cardCode = card.dataset.code;
-            const hasHiddenTag = hiddenTags.some(tag => 
-                karutaDataStore.tagCards[tag]?.has(cardCode)
+            
+            // Check if the card has any tags (standard or custom)
+            const hasStandardTags = Object.values(karutaDataStore.tagCards).some(cards => 
+                cards.has(cardCode)
             );
-            card.style.display = hasHiddenTag ? 'none' : '';
+            
+            const hasCustomTags = Object.values(karutaDataStore.customTags).some(cards => 
+                cards.has(cardCode)
+            );
+            
+            // Hide card if it has any tags, show it if it has no tags
+            card.style.display = (hasStandardTags || hasCustomTags) ? 'none' : '';
         });
     },
     

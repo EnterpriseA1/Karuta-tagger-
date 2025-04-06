@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karuta Card Image Finder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../src/css/styles.css">
+</head>
+<body>
+    <div class="container-fluid py-3 app-container">
+        <div class="main-title">
+            <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" alt="Karuta Logo" class="app-logo">
+            <h1 class="mb-0">Karuta Card Image Finder</h1>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="csvFile" class="form-label">Upload Karuta CSV File:</label>
+                            <input class="form-control" type="file" id="csvFile" accept=".csv">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="sortCheck" checked>
+                            <label class="form-check-label" for="sortCheck">
+                                Sort by Burn Value
+                            </label>
+                        </div>
+                        <div class="btn-group mb-3" role="group">
+                            <input type="radio" class="btn-check" name="sortOrder" id="sortDesc" checked>
+                            <label class="btn btn-outline-primary" for="sortDesc">Highest First</label>
+                            <input type="radio" class="btn-check" name="sortOrder" id="sortAsc">
+                            <label class="btn btn-outline-primary" for="sortAsc">Lowest First</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Left Panel - Card List -->
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Card List</span>
+                            <span class="card-counter" id="cardCounter">0 cards</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="search-input-container mb-2">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search cards...">
+                            <i class="bi bi-search search-icon"></i>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label>Hide cards with tags:</label>
+                            <div id="filterTagContainer" class="d-flex flex-wrap gap-1">
+                                <label class="form-check-inline">
+                                    <input type="checkbox" class="form-check-input tag-filter" value="waifus"> Waifus
+                                </label>
+                                <label class="form-check-inline">
+                                    <input type="checkbox" class="form-check-input tag-filter" value="collected_series"> Collected Series
+                                </label>
+                                <label class="form-check-inline">
+                                    <input type="checkbox" class="form-check-input tag-filter" value="slidetrade"> Slidetrade
+                                </label>
+                                <label class="form-check-inline">
+                                    <input type="checkbox" class="form-check-input tag-filter" value="worker"> Worker
+                                </label>
+                                <label class="form-check-inline">
+                                    <input type="checkbox" class="form-check-input tag-filter" value="burnburn"> Burnburn
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="cardList" class="card-list">
+                            <!-- Card items will be populated here -->
+                            <div class="text-center p-4 text-muted">
+                                Please upload a CSV file
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Card Details and Image -->
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        Card Details
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="mb-2"><strong>Character:</strong> <span id="characterName">-</span></div>
+                                <div class="mb-2"><strong>Series:</strong> <span id="seriesName">-</span></div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="mb-2"><strong>Code:</strong> <span id="cardCode">-</span></div>
+                                <div class="mb-2"><strong>Burn Value:</strong> <span id="burnValue" class="burn-value">-</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3 mt-2">
+                            <div class="col-12">
+                                <button id="generateImageBtn" class="btn btn-primary me-2">
+                                    <i class="bi bi-image"></i> Generate Image
+                                </button>
+                                <button id="nextImageBtn" class="btn btn-outline-secondary me-2">
+                                    <i class="bi bi-arrow-right"></i> Next Image
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="section-title tag-card-title"><i class="bi bi-tags"></i> Tag Card:</div>
+                                <button id="waifusBtn" class="btn btn-sm text-white tag-button">Waifus</button>
+                                <button id="collectedSeriesBtn" class="btn btn-sm text-white tag-button">Collected Series</button>
+                                <button id="slidetradeBtn" class="btn btn-sm text-white tag-button">Slidetrade</button>
+                                <button id="workerBtn" class="btn btn-sm text-white tag-button">Worker</button>
+                                <button id="burnburnBtn" class="btn btn-sm text-white tag-button">Burnburn</button>
+                                
+                                <!-- Custom Tag Input -->
+                                <div class="custom-tag-container">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control form-control-sm" id="customTagInput" placeholder="Custom tag">
+                                        <button id="addCustomTagBtn" class="btn btn-sm btn-secondary">
+                                            <i class="bi bi-plus-lg"></i> Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="section-title"><i class="bi bi-bookmark"></i> Current Card Tags:</div>
+                                <div id="currentCardTags">None</div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="image-container" id="imageContainer">
+                                    <div class="placeholder-img">Select a card to generate images</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-code"></i></span>
+                                    <input type="text" class="form-control" id="commandOutput" placeholder="Karuta command will appear here" readonly>
+                                    <button class="btn btn-outline-primary" id="generateBtn">
+                                        <i class="bi bi-gear"></i> Generate
+                                    </button>
+                                    <button class="btn btn-outline-secondary" id="copyBtn">
+                                        <i class="bi bi-clipboard"></i> Copy
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="clearTagsBtn">
+                                        <i class="bi bi-trash"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <i class="bi bi-tags"></i> Tagged Cards
+                    </div>
+                    <div class="card-body">
+                        <div id="tagStatus">None</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar" id="statusBar">Ready</div>
+    
+    <!-- Tag Selection Modal -->
+    <div class="modal fade" id="tagModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Select Tag for Command</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group" id="tagList">
+                        <!-- Tag options will be populated here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="selectTagBtn">Generate Command</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    
+    <!-- Application scripts -->
+    <script src="../src/js/karutaUtils.js"></script>
+    <script src="../src/js/karutaDataStore.js"></script>
+    <script src="../src/js/ui.js"></script>
+    <script src="../src/js/csvParser.js"></script>
+    <script src="../src/js/cardHandler.js"></script>
+    <script src="../src/js/imageHandler.js"></script>
+    <script src="../src/js/tagManager.js"></script>
+    <script src="../src/js/app.js"></script>
+</body>
+</html>

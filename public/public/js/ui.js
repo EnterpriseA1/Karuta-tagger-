@@ -61,11 +61,14 @@ const ui = {
      */
     setupEventListeners() {
         // File upload
-        this.elements.csvFile.addEventListener('change', csvParser.handleFileUpload);
+        this.elements.csvFile.addEventListener('change', (e) => csvParser.handleFileUpload(e));
         
         // Search and filter
         this.elements.searchInput.addEventListener('input', cardHandler.filterCards);
-        this.elements.hideTaggedCheck.addEventListener('change', cardHandler.filterCardsByTag);
+        this.elements.hideTaggedCheck.addEventListener('change', () => {
+            // Re-display card list completely when the checkbox changes
+            cardHandler.displayCardList();
+        });
         
         // Sorting
         this.elements.sortCheck.addEventListener('change', cardHandler.applySort);
@@ -73,20 +76,20 @@ const ui = {
         this.elements.sortDesc.addEventListener('change', cardHandler.applySort);
         
         // Image handling
-        this.elements.generateImageBtn.addEventListener('click', imageHandler.generateImage);
-        this.elements.nextImageBtn.addEventListener('click', imageHandler.showNextImage);
+        this.elements.generateImageBtn.addEventListener('click', () => imageHandler.generateImage());
+        this.elements.nextImageBtn.addEventListener('click', () => imageHandler.showNextImage());
         
         // Tagging
         for (const [tag, button] of Object.entries(this.tagButtons)) {
             button.addEventListener('click', () => tagManager.tagCurrentCard(tag));
         }
-        this.elements.addCustomTagBtn.addEventListener('click', tagManager.addCustomTag);
+        this.elements.addCustomTagBtn.addEventListener('click', () => tagManager.addCustomTag());
         
         // Command generation
-        this.elements.generateBtn.addEventListener('click', tagManager.showTagSelectionModal);
-        this.elements.copyBtn.addEventListener('click', tagManager.copyCommand);
-        this.elements.clearTagsBtn.addEventListener('click', tagManager.clearAllTags);
-        this.elements.selectTagBtn.addEventListener('click', tagManager.generateCommand);
+        this.elements.generateBtn.addEventListener('click', () => tagManager.showTagSelectionModal());
+        this.elements.copyBtn.addEventListener('click', () => tagManager.copyCommand());
+        this.elements.clearTagsBtn.addEventListener('click', () => tagManager.clearAllTags());
+        this.elements.selectTagBtn.addEventListener('click', () => tagManager.generateCommand());
     },
     
     /**
@@ -98,7 +101,7 @@ const ui = {
         exportButton.style.right = '10px';
         exportButton.style.top = '10px';
         exportButton.innerHTML = '<i class="bi bi-download"></i> Export Tags';
-        exportButton.addEventListener('click', tagManager.exportTagsToJson);
+        exportButton.addEventListener('click', () => tagManager.exportTagsToJson());
         document.body.appendChild(exportButton);
     },
     

@@ -3,6 +3,21 @@
  */
 const tagManager = {
     /**
+     * Initialize the tag manager
+     */
+    init() {
+        this.tagCurrentCard = this.tagCurrentCard.bind(this);
+        this.addCustomTag = this.addCustomTag.bind(this);
+        this.showTagSelectionModal = this.showTagSelectionModal.bind(this);
+        this.generateCommand = this.generateCommand.bind(this);
+        this.copyCommand = this.copyCommand.bind(this);
+        this.clearAllTags = this.clearAllTags.bind(this);
+        this.exportTagsToJson = this.exportTagsToJson.bind(this);
+        this.importTagsFromJson = this.importTagsFromJson.bind(this);
+        this.removeTag = this.removeTag.bind(this);
+    },
+    
+    /**
      * Tags the currently selected card with the specified tag
      * @param {string} tag - The tag to apply
      */
@@ -43,6 +58,36 @@ const tagManager = {
         ui.updateTagStatus();
         ui.updateCurrentCardTags();
         ui.updateStatus(`Card ${code} tagged as '${customTag}'`);
+    },
+    
+    /**
+     * Removes a tag from the currently selected card
+     * @param {string} tag - The tag to remove
+     * @param {boolean} isCustom - Whether this is a custom tag
+     */
+    removeTag(tag, isCustom) {
+        if (!karutaDataStore.selectedCard) {
+            return;
+        }
+        
+        const code = karutaDataStore.selectedCard.code;
+        
+        if (isCustom) {
+            if (karutaDataStore.customTags[tag]) {
+                karutaDataStore.customTags[tag].delete(code);
+                
+                // Remove empty tag set
+                if (karutaDataStore.customTags[tag].size === 0) {
+                    delete karutaDataStore.customTags[tag];
+                }
+            }
+        } else {
+            karutaDataStore.tagCards[tag].delete(code);
+        }
+        
+        ui.updateCurrentCardTags();
+        ui.updateTagStatus();
+        ui.updateStatus(`Removed tag '${tag}' from card ${code}`);
     },
     
     /**

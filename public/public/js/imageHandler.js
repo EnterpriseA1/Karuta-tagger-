@@ -2,6 +2,13 @@
  * Image generation and display functionality
  */
 const imageHandler = {
+    // Binding the methods to this object to maintain context
+    init() {
+        this.generateImage = this.generateImage.bind(this);
+        this.showNextImage = this.showNextImage.bind(this);
+        this.displayImage = this.displayImage.bind(this);
+    },
+    
     /**
      * Generates images for the selected card
      */

@@ -3,6 +3,17 @@
  */
 const csvParser = {
     /**
+     * Initialize the CSV parser
+     */
+    init() {
+        this.handleFileUpload = this.handleFileUpload.bind(this);
+        this.handleParseCompletion = this.handleParseCompletion.bind(this);
+        this.findColumn = this.findColumn.bind(this);
+        this.createPreviewButton = this.createPreviewButton.bind(this);
+        this.showDataPreview = this.showDataPreview.bind(this);
+    },
+
+    /**
      * Handles file upload and CSV parsing
      * @param {Event} e - The file input change event
      */
@@ -16,9 +27,9 @@ const csvParser = {
             header: true,
             dynamicTyping: true,
             skipEmptyLines: true,
-            complete: function(results) {
+            complete: (results) => {
                 // Handle parse completion
-                csvParser.handleParseCompletion(results);
+                this.handleParseCompletion(results);
             }
         });
     },

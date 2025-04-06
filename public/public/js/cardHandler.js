@@ -3,6 +3,17 @@
  */
 const cardHandler = {
     /**
+     * Initialize the card handler
+     */
+    init() {
+        this.applySort = this.applySort.bind(this);
+        this.filterCards = this.filterCards.bind(this);
+        this.filterCardsByTag = this.filterCardsByTag.bind(this);
+        this.displayCardList = this.displayCardList.bind(this);
+        this.displayCardDetails = this.displayCardDetails.bind(this);
+    },
+    
+    /**
      * Applies sorting to card list
      */
     applySort() {
@@ -47,7 +58,7 @@ const cardHandler = {
      */
     filterCardsByTag() {
         // Get the state of the hide tagged checkbox
-        const hideTagged = document.getElementById('hideTaggedCheck').checked;
+        const hideTagged = ui.elements.hideTaggedCheck.checked;
         
         if (!hideTagged) {
             // Show all cards if checkbox is not checked
@@ -73,6 +84,8 @@ const cardHandler = {
             // Hide card if it has any tags, show it if it has no tags
             card.style.display = (hasStandardTags || hasCustomTags) ? 'none' : '';
         });
+        
+        ui.updateStatus(hideTagged ? 'Hiding tagged cards' : 'Showing all cards');
     },
     
     /**

@@ -8,6 +8,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize data store
     karutaDataStore.init();
     
+    // Initialize image handler
+    imageHandler.init();
+    
+    // Initialize card handler
+    cardHandler.init();
+    
+    // Initialize tag manager
+    tagManager.init();
+    
+    // Initialize CSV parser
+    csvParser.init();
+    
     // Setup event listeners
     ui.setupEventListeners();
     

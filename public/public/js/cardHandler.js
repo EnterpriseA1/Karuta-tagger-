@@ -34,11 +34,12 @@ const cardHandler = {
     },
     
     /**
-     * Filters cards based on search input
+     * Filters cards based on search input and tag status
      */
     filterCards() {
         const searchTerm = ui.elements.searchInput.value.toLowerCase();
         
+        // First filter by search term
         if (searchTerm === '') {
             karutaDataStore.filteredCards = [...karutaDataStore.cardsData];
         } else {
@@ -48,8 +49,13 @@ const cardHandler = {
             );
         }
         
-        cardHandler.applySort();
-        ui.updateStatus(`Found ${karutaDataStore.filteredCards.length} cards matching '${searchTerm}'`);
+        // Then apply tag filtering if needed
+        this.filterCardsByTag();
+        
+        // Now apply sorting
+        this.applySort();
+        
+        ui.updateStatus(`Found ${karutaDataStore.filteredCards.length} cards matching criteria`);
         ui.updateCardCounter(karutaDataStore.filteredCards.length);
     },
     
@@ -61,16 +67,13 @@ const cardHandler = {
         const hideTagged = ui.elements.hideTaggedCheck.checked;
         
         if (!hideTagged) {
-            // Show all cards if checkbox is not checked
-            document.querySelectorAll('.card-item').forEach(card => {
-                card.style.display = '';
-            });
+            // Don't apply additional filtering if checkbox is not checked
             return;
         }
         
-        // Hide cards WITH tags (reverse of previous functionality)
-        document.querySelectorAll('.card-item').forEach(card => {
-            const cardCode = card.dataset.code;
+        // Filter out cards that have any tags (standard or custom)
+        karutaDataStore.filteredCards = karutaDataStore.filteredCards.filter(card => {
+            const cardCode = card.code;
             
             // Check if the card has any tags (standard or custom)
             const hasStandardTags = Object.values(karutaDataStore.tagCards).some(cards => 
@@ -81,11 +84,9 @@ const cardHandler = {
                 cards.has(cardCode)
             );
             
-            // Hide card if it has any tags, show it if it has no tags
-            card.style.display = (hasStandardTags || hasCustomTags) ? 'none' : '';
+            // Keep card only if it has no tags
+            return !(hasStandardTags || hasCustomTags);
         });
-        
-        ui.updateStatus(hideTagged ? 'Hiding tagged cards' : 'Showing all cards');
     },
     
     /**
@@ -125,8 +126,6 @@ const cardHandler = {
             
             ui.elements.cardList.appendChild(cardItem);
         });
-        
-        this.filterCardsByTag();
     },
     
     /**

@@ -88,6 +88,9 @@ const tagManager = {
         ui.updateCurrentCardTags();
         ui.updateTagStatus();
         ui.updateStatus(`Removed tag '${tag}' from card ${code}`);
+        
+        // Refresh the card list after removing a tag
+        cardHandler.filterCards();
     },
     
     /**
@@ -243,6 +246,9 @@ const tagManager = {
                 ui.updateTagStatus();
                 ui.updateCurrentCardTags();
                 ui.updateStatus('Tags imported successfully');
+                
+                // Refresh the card list after importing tags
+                cardHandler.filterCards();
             } catch (error) {
                 console.error('Error importing tags:', error);
                 alert('Error importing tags. Please check the file format.');

@@ -65,10 +65,7 @@ const ui = {
         
         // Search and filter
         this.elements.searchInput.addEventListener('input', cardHandler.filterCards);
-        this.elements.hideTaggedCheck.addEventListener('change', () => {
-            // Re-display card list completely when the checkbox changes
-            cardHandler.displayCardList();
-        });
+        this.elements.hideTaggedCheck.addEventListener('change', cardHandler.filterCards);
         
         // Sorting
         this.elements.sortCheck.addEventListener('change', cardHandler.applySort);
@@ -81,14 +78,26 @@ const ui = {
         
         // Tagging
         for (const [tag, button] of Object.entries(this.tagButtons)) {
-            button.addEventListener('click', () => tagManager.tagCurrentCard(tag));
+            button.addEventListener('click', () => {
+                tagManager.tagCurrentCard(tag);
+                // Refresh the card list after adding a tag
+                cardHandler.filterCards();
+            });
         }
-        this.elements.addCustomTagBtn.addEventListener('click', () => tagManager.addCustomTag());
+        this.elements.addCustomTagBtn.addEventListener('click', () => {
+            tagManager.addCustomTag();
+            // Refresh the card list after adding a tag
+            cardHandler.filterCards();
+        });
         
         // Command generation
         this.elements.generateBtn.addEventListener('click', () => tagManager.showTagSelectionModal());
         this.elements.copyBtn.addEventListener('click', () => tagManager.copyCommand());
-        this.elements.clearTagsBtn.addEventListener('click', () => tagManager.clearAllTags());
+        this.elements.clearTagsBtn.addEventListener('click', () => {
+            tagManager.clearAllTags();
+            // Refresh the card list after clearing tags
+            cardHandler.filterCards();
+        });
         this.elements.selectTagBtn.addEventListener('click', () => tagManager.generateCommand());
     },
     
